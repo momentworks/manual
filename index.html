@@ -26,17 +26,20 @@
   .status{font-size:12px; color:#cfd7ee;}
   input[type=file]{display:none;}
 
-  .page{max-width:920px; margin:24px auto 40px; background:var(--paper); box-shadow:0 4px 20px rgba(0,0,0,.08); border:1px solid var(--line);}
+  .page{max-width:960px; margin:24px auto 40px; background:var(--paper); box-shadow:0 4px 20px rgba(0,0,0,.08); border:1px solid var(--line);}
   .doc-title{background:var(--navy); color:#fff; text-align:center; padding:16px;}
   .doc-title .t1{font-size:20px; font-weight:800; letter-spacing:.04em;}
   .doc-title .t2{font-size:13px; opacity:.85; margin-top:4px;}
 
   .meta-row{display:flex; border-bottom:1px solid var(--line);}
   .meta-row .label{width:150px; flex-shrink:0; background:var(--navy-soft); font-weight:700; padding:12px 14px; border-right:1px solid var(--line); font-size:13.5px;}
-  .meta-row .value{flex:1; padding:12px 14px; font-size:13.5px;}
+  .meta-row .value{flex:1; padding:12px 14px; font-size:13.5px; line-height:1.9;}
   [contenteditable]:hover{background:#fbfcff; outline:1px dashed #b9c3dd;}
   [contenteditable]:focus{background:#fff; outline:2px solid #7c8fd6;}
   [data-empty]:empty::before{content:attr(data-empty); color:#aab0bd; font-style:italic;}
+  .f{display:inline-block; min-width:70px; padding:0 2px; border-bottom:1px dashed #b9c3dd;}
+  .f.wide{min-width:120px;}
+  .f.narrow{min-width:40px;}
 
   .section{border-bottom:1px solid var(--line);}
   .section-head{display:flex; align-items:stretch;}
@@ -45,19 +48,18 @@
   .subrow{display:flex; border-bottom:1px solid var(--line);}
   .subrow:last-child{border-bottom:none;}
   .subrow .sublabel{width:150px; flex-shrink:0; background:#f4f6fb; font-weight:600; padding:9px 12px; border-right:1px solid var(--line); font-size:13px;}
-  .subrow .subvalue{flex:1; padding:9px 12px; font-size:13px; line-height:1.6;}
+  .subrow .subvalue{flex:1; padding:9px 12px; font-size:13px; line-height:2;}
 
   .two-col{display:flex;}
-  .two-col > div{flex:1; padding:14px 16px; font-size:13px; line-height:1.8;}
+  .two-col > div{flex:1; padding:14px 16px; font-size:13px; line-height:1.9;}
   .two-col > div:first-child{border-right:1px solid var(--line);}
   .note{color:var(--muted); font-size:12px;}
 
   table.grid{width:100%; border-collapse:collapse; font-size:13px;}
   table.grid th{background:var(--navy-soft); font-weight:700; padding:10px; border:1px solid var(--line); text-align:center;}
-  table.grid td{padding:10px 12px; border:1px solid var(--line); vertical-align:top; line-height:1.6;}
+  table.grid td{padding:10px 12px; border:1px solid var(--line); vertical-align:top; line-height:1.7;}
   tr.warn td{background:var(--amber);}
   tr.critical td{background:#fdecea;}
-  tr.special td{background:#e7f3ff;}
   .strong{font-weight:800;}
   .strong.red{color:var(--red);}
 
@@ -66,7 +68,7 @@
   .role-table td{padding:10px 12px; border:1px solid var(--line); line-height:1.7; vertical-align:top;}
   .role-table .step-mark{color:var(--red); font-weight:800;}
 
-  .suggest-box{max-width:920px; margin:0 auto 40px; background:#fff8ec; border:1px solid #e8d7a0; border-radius:8px; padding:18px 22px; font-size:13.5px; line-height:1.8;}
+  .suggest-box{max-width:960px; margin:0 auto 40px; background:#fff8ec; border:1px solid #e8d7a0; border-radius:8px; padding:18px 22px; font-size:13.5px; line-height:1.8;}
   .suggest-box h2{font-size:15px; margin:0 0 10px; color:var(--navy);}
   .suggest-box ul{margin:0; padding-left:20px;}
 
@@ -76,35 +78,21 @@
     .page{box-shadow:none; border:none; margin:0; max-width:100%; width:100%;}
     [contenteditable]:hover{outline:none; background:transparent;}
     [contenteditable]:focus{outline:none; background:transparent;}
-
     *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
-
-    /* keep each block from splitting awkwardly across pages */
     .section, table.grid, .role-table, tr, .meta-row, .subrow{page-break-inside:avoid; break-inside:avoid;}
     .section-head{page-break-inside:avoid; break-inside:avoid;}
-
-    /* tighten spacing so the whole manual fits with fewer wasted pages */
     .doc-title{padding:8px;}
     .doc-title .t1{font-size:16px;}
     .doc-title .t2{font-size:11px; margin-top:2px;}
-
-    .meta-row .label, .section-head .side-label, .subrow .sublabel{
-      width:110px; padding:6px 8px; font-size:10.5px;
-    }
-    .meta-row .value, .subrow .subvalue{padding:6px 8px; font-size:10.5px; line-height:1.4;}
-
-    .two-col > div{padding:8px 10px; font-size:10.5px; line-height:1.4;}
-
+    .meta-row .label, .section-head .side-label, .subrow .sublabel{width:110px; padding:6px 8px; font-size:10.5px;}
+    .meta-row .value, .subrow .subvalue{padding:6px 8px; font-size:10.5px; line-height:1.5;}
+    .two-col > div{padding:8px 10px; font-size:10.5px; line-height:1.5;}
     table.grid, .role-table{font-size:10px;}
     table.grid th, .role-table th{padding:5px 6px;}
-    table.grid td, .role-table td{padding:5px 8px; line-height:1.35;}
-
-    /* envelope example: keep to a modest, fixed print size */
+    table.grid td, .role-table td{padding:5px 8px; line-height:1.4;}
     .section img{max-width:220px !important; margin:0 auto; display:block;}
     .section:last-of-type .section-body{padding:8px !important;}
-
     a{color:inherit; text-decoration:none;}
-
     @page{size:A4; margin:9mm;}
   }
 </style>
@@ -130,35 +118,58 @@
 
   <div class="meta-row">
     <div class="label">날짜 / 시간 / 장소</div>
-    <div class="value" contenteditable data-empty="예) 2026.10.10(토) 12:30 · OO웨딩홀 (지역) · 별관 3층 그랜드홀" id="f-datetime"></div>
+    <div class="value">
+      <span class="f" contenteditable data-empty="예식일" id="f-event-date"></span>
+      <span class="f narrow" contenteditable data-empty="시간" id="f-event-time"></span> ·
+      <span class="f wide" contenteditable data-empty="예식장명" id="f-venue-name"></span>
+      (<span class="f" contenteditable data-empty="지역" id="f-region"></span>) ·
+      <span class="f wide" contenteditable data-empty="홀 이름" id="f-hall-name"></span>
+    </div>
   </div>
   <div class="meta-row">
     <div class="label">신랑</div>
-    <div class="value" contenteditable data-empty="신랑 성함 · 예상 하객 수 · 혼주 성함" id="f-groom"></div>
+    <div class="value">
+      <span class="f" contenteditable data-empty="신랑 성함" id="f-groom-name"></span> ·
+      예상 하객 <span class="f narrow" contenteditable data-empty="수" id="f-groom-guests"></span>명 ·
+      혼주 <span class="f wide" contenteditable data-empty="혼주 성함" id="f-groom-parent"></span>
+    </div>
   </div>
   <div class="meta-row">
     <div class="label">신부</div>
-    <div class="value" contenteditable data-empty="신부 성함 · 예상 하객 수 · 혼주 성함" id="f-bride"></div>
+    <div class="value">
+      <span class="f" contenteditable data-empty="신부 성함" id="f-bride-name"></span> ·
+      예상 하객 <span class="f narrow" contenteditable data-empty="수" id="f-bride-guests"></span>명 ·
+      혼주 <span class="f wide" contenteditable data-empty="혼주 성함" id="f-bride-parent"></span>
+    </div>
   </div>
   <div class="meta-row">
     <div class="label">신랑·신부 도착</div>
-    <div class="value" contenteditable data-empty="신랑·신부님 웨딩홀 도착 예상 시간" id="f-arrival"></div>
+    <div class="value"><span class="f wide" contenteditable data-empty="웨딩홀 도착 예상 시간" id="f-arrival"></span> 웨딩홀 도착 예정</div>
   </div>
   <div class="meta-row">
     <div class="label">담당 매니저</div>
-    <div class="value" contenteditable data-empty="현장 총괄 매니저 성함 / 연락처 입력" id="f-manager"></div>
+    <div class="value" contenteditable data-empty="현장 총괄 매니저 성함 / 연락처 입력 (설정서 항목 아님, 수동 입력)" id="f-manager"></div>
   </div>
 
   <div class="section">
     <div class="section-head">
       <div class="side-label">기본 안내</div>
       <div class="section-body">
-        <div class="subrow"><div class="sublabel">주차</div><div class="subvalue" contenteditable data-empty="주차 등록 방법 / 무료 주차 시간" id="f-parking"></div></div>
-        <div class="subrow"><div class="sublabel">ATM</div><div class="subvalue" contenteditable data-empty="ATM 위치" id="f-atm"></div></div>
-        <div class="subrow"><div class="sublabel">식사, 연회장 위치</div><div class="subvalue" contenteditable data-empty="연회장 위치 (신부대기실 위치)" id="f-hall"></div></div>
-        <div class="subrow"><div class="sublabel">식사 가능 시간</div><div class="subvalue" contenteditable data-empty="식사 가능 시간" id="f-mealtime"></div></div>
-        <div class="subrow"><div class="sublabel">답례품 교환</div><div class="subvalue" contenteditable data-empty="답례품 제공 여부 / 교환 방법" id="f-gift"></div></div>
-        <div class="subrow"><div class="sublabel">어린이 식권 안내</div><div class="subvalue" contenteditable data-empty="소인 식권 나이 기준 / 소진 시 대인 식권 대체 가능 여부" id="f-kids"></div></div>
+        <div class="subrow"><div class="sublabel">주차</div><div class="subvalue">
+          등록 방법: <span class="f wide" contenteditable data-empty="주차 등록 방법" id="f-parking-method"></span><br>
+          무료 주차 시간: <span class="f wide" contenteditable data-empty="무료 주차 시간" id="f-parking-free"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">ATM</div><div class="subvalue"><span class="f wide" contenteditable data-empty="ATM 위치" id="f-atm"></span></div></div>
+        <div class="subrow"><div class="sublabel">식사, 연회장 위치</div><div class="subvalue">
+          연회장 위치: <span class="f wide" contenteditable data-empty="연회장 위치" id="f-hall-location"></span><br>
+          신부대기실 위치: <span class="f wide" contenteditable data-empty="신부대기실 위치" id="f-bride-wait"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">식사 가능 시간</div><div class="subvalue"><span class="f wide" contenteditable data-empty="식사 가능 시간" id="f-mealtime"></span></div></div>
+        <div class="subrow"><div class="sublabel">답례품 교환</div><div class="subvalue"><span class="f wide" contenteditable data-empty="답례품 제공 여부 / 교환 방법" id="f-gift"></span></div></div>
+        <div class="subrow"><div class="sublabel">어린이 식권 안내</div><div class="subvalue">
+          나이 기준: <span class="f wide" contenteditable data-empty="소인 식권 나이 기준" id="f-kids-age"></span><br>
+          소진 시 대인 식권 대체: <span class="f" contenteditable data-empty="가능/불가능" id="f-kids-swap"></span>
+        </div></div>
       </div>
     </div>
   </div>
@@ -168,16 +179,17 @@
       <div class="side-label">식권</div>
       <div class="section-body two-col">
         <div>
-          <div>1. 신랑측: 대인 <span contenteditable data-empty="[매수]" style="display:inline-block;min-width:50px;" id="f-ticket-groom"></span>장 + 소인 <span contenteditable data-empty="[매수]" style="display:inline-block;min-width:50px;" id="f-ticket-groom-kids"></span>장</div>
-          <div>2. 신부측: 대인 <span contenteditable data-empty="[매수]" style="display:inline-block;min-width:50px;" id="f-ticket-bride"></span>장 + 소인 <span contenteditable data-empty="[매수]" style="display:inline-block;min-width:50px;" id="f-ticket-bride-kids"></span>장</div>
+          <div>1. 신랑측: 대인 <span class="f narrow" contenteditable data-empty="매수" id="f-ticket-groom"></span>장 + 소인 <span class="f narrow" contenteditable data-empty="매수" id="f-ticket-groom-kids"></span>장</div>
+          <div>2. 신부측: 대인 <span class="f narrow" contenteditable data-empty="매수" id="f-ticket-bride"></span>장 + 소인 <span class="f narrow" contenteditable data-empty="매수" id="f-ticket-bride-kids"></span>장</div>
           <br>
-          <div>※ 식권 교차 사용 가능 여부: <span contenteditable data-empty="[가능/불가능]" style="display:inline-block;min-width:60px;" id="f-ticket-cross"></span></div>
-          <div>※ 식권 부족 시 → <span contenteditable data-empty="[장소]" style="display:inline-block;min-width:60px;" id="f-ticket-refill"></span>에 추가 식권 요청</div>
-          <div>※ 소인 식권 부족 시 대인식권으로 대체 <span contenteditable data-empty="[가능/불가능]" style="display:inline-block;min-width:60px;" id="f-ticket-swap"></span></div>
+          <div>※ 식권 교차 사용 가능 여부: <span class="f" contenteditable data-empty="가능/불가능" id="f-ticket-cross"></span></div>
+          <div>※ 식권 소진 시 대응: <span class="f wide" contenteditable data-empty="대응 방법" id="f-ticket-refill-method"></span></div>
+          <div>※ 추가 수령 장소: <span class="f" contenteditable data-empty="장소" id="f-ticket-refill"></span></div>
+          <div>※ 소인 식권 부족 시 대인식권 대체: <span class="f" contenteditable data-empty="가능/불가능" id="f-ticket-swap"></span></div>
         </div>
         <div>
           <div class="note" style="margin-bottom:6px;">특이사항 / 비고</div>
-          <div contenteditable data-empty="예) 모바일 청첩장 주소, 채식 하객 인원 등 특이사항" id="f-ticket-note"></div>
+          <div>모바일 청첩장: <span class="f wide" contenteditable data-empty="모바일 청첩장 주소" id="f-ticket-note"></span></div>
         </div>
       </div>
     </div>
@@ -187,8 +199,8 @@
     <div class="section-head">
       <div class="side-label">계좌 정보<br><span class="note">(계좌이체 대응용)</span></div>
       <div class="section-body">
-        <div class="subrow"><div class="sublabel">신랑측 계좌</div><div class="subvalue" contenteditable data-empty="은행 / 계좌번호 / 예금주" id="f-acct-groom"></div></div>
-        <div class="subrow"><div class="sublabel">신부측 계좌</div><div class="subvalue" contenteditable data-empty="은행 / 계좌번호 / 예금주" id="f-acct-bride"></div></div>
+        <div class="subrow"><div class="sublabel">신랑측 계좌</div><div class="subvalue"><span class="f wide" contenteditable data-empty="은행 / 계좌번호 / 예금주" id="f-acct-groom"></span></div></div>
+        <div class="subrow"><div class="sublabel">신부측 계좌</div><div class="subvalue"><span class="f wide" contenteditable data-empty="은행 / 계좌번호 / 예금주" id="f-acct-bride"></span></div></div>
       </div>
     </div>
   </div>
@@ -198,11 +210,16 @@
       <div class="side-label">축의금 돌발상황<br>(사기 수법 주의)</div>
       <div class="section-body">
         <table class="grid">
-          <tr class="warn"><td style="width:45%;">돈 잘못 냈으니 축의봉투 돌려달라고 함</td><td>반환 불가 (식종료 후 신랑신부님께 직접 연락)</td></tr>
+          <tr class="warn"><td style="width:40%;">돈 잘못 냈으니 축의봉투 돌려달라고 함</td><td><span class="f wide" contenteditable data-empty="반환 불가 (식종료 후 신랑신부님께 직접 연락)" id="f-return-policy"></span></td></tr>
           <tr class="warn"><td>빈 봉투 또는 만원 이하 내고 식권 요구</td><td rowspan="2">축의대에서 처리 불가하니 지인 여부 확인할 수 있도록 신랑님 or 신부님 연락처 확인 요청</td></tr>
           <tr class="warn"><td>식권 지나치게 많이 요구</td></tr>
-          <tr class="warn"><td contenteditable data-empty="식권 수령 후, 추가 지급 요청" style="font-weight:800;"></td><td contenteditable data-empty="기본 정책: 성함·금액 등 내역 확인 후 지급 (성함 기재) — 설정서에 다른 대응 방법이 있으면 여기에 반영"></td></tr>
-          <tr class="warn"><td>계좌이체 후 식권 요청</td><td><span class="strong">모바일 청첩장 확인 (위 링크) + 성함 / 금액 / 시간 기재</span></td></tr>
+          <tr class="warn"><td style="font-weight:800;">식권 수령 후, 추가 지급 요청</td><td>
+            기본 대응: <span class="f wide" contenteditable data-empty="식권 추가 지급 요청 시 대응 방법" id="f-extra-ticket-method"></span><br>
+            기타(특이사항): <span class="f wide" contenteditable data-empty="식권 추가 지급 대응(기타)" id="f-extra-ticket-etc"></span>
+          </td></tr>
+          <tr class="warn"><td>계좌이체 후 식권 요청</td><td>
+            응대 방법: <span class="f wide" contenteditable data-empty="축의금 계좌이체 하객 응대 방법" id="f-transfer-method"></span> (위 모바일 청첩장 확인 + 성함 / 금액 / 시간 기재)
+          </td></tr>
           <tr class="critical"><td class="strong">중간 정산으로 축의금을 달라고 함</td><td class="strong">중간 정산 없음 (절대 불가)</td></tr>
         </table>
       </div>
@@ -230,13 +247,38 @@
     <div class="section-head">
       <div class="side-label">VIP 명단</div>
       <div class="section-body">
-        <table class="grid">
+        <div class="note" style="padding:8px 12px 0;">작성 여부: <span class="f" contenteditable data-empty="있음/없음" id="f-vip-written"></span></div>
+        <table class="grid" style="margin-top:8px;">
           <tr><th style="width:35%;">성함(업체명)</th><th style="width:20%;">관계</th><th style="width:20%;">연락처</th><th>지급 식권 수량</th></tr>
           <tr><td contenteditable data-empty="성함 또는 업체명"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td></tr>
           <tr><td contenteditable data-empty="성함 또는 업체명"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td></tr>
           <tr><td contenteditable data-empty="성함 또는 업체명"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td><td contenteditable data-empty="-"></td></tr>
         </table>
-        <div class="note" style="padding:8px 12px;" contenteditable data-empty="※ VIP 명단 작성 여부가 '있음'인 경우에만 작성 — 관계/연락처/지급 식권 수량은 현장 확인 필요"></div>
+        <div class="note" style="padding:8px 12px;">※ 명단 자체(성함·업체명·연락처·지급 수량)는 설정서의 표 형태라 자동 인식이 어려워 직접 입력이 필요합니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="side-label">축의금 인계</div>
+      <div class="section-body">
+        <div class="subrow"><div class="sublabel">신랑측 인계자</div><div class="subvalue">
+          관계: <span class="f" contenteditable data-empty="관계" id="f-handover-groom-role"></span> ·
+          성함: <span class="f" contenteditable data-empty="성함" id="f-handover-groom-name"></span> ·
+          연락처: <span class="f" contenteditable data-empty="연락처" id="f-handover-groom-phone"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">신부측 인계자</div><div class="subvalue">
+          관계: <span class="f" contenteditable data-empty="관계" id="f-handover-bride-role"></span> ·
+          성함: <span class="f" contenteditable data-empty="성함" id="f-handover-bride-name"></span> ·
+          연락처: <span class="f" contenteditable data-empty="연락처" id="f-handover-bride-phone"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">내역 노출 방식</div><div class="subvalue"><span class="f wide" contenteditable data-empty="축의금 인계시 내역 노출 여부" id="f-handover-disclose"></span></div></div>
+        <div class="subrow"><div class="sublabel">세부내역 전달</div><div class="subvalue"><span class="f wide" contenteditable data-empty="축의금 전체 세부내역 전달 방식" id="f-handover-detail-method"></span></div></div>
+        <div class="subrow"><div class="sublabel">정리내역 이메일</div><div class="subvalue">
+          신랑측: <span class="f wide" contenteditable data-empty="이메일" id="f-handover-email-groom"></span> ·
+          신부측: <span class="f wide" contenteditable data-empty="이메일" id="f-handover-email-bride"></span>
+        </div></div>
       </div>
     </div>
   </div>
@@ -245,11 +287,23 @@
     <div class="section-head">
       <div class="side-label">마무리 및 정산</div>
       <div class="section-body">
-        <div class="subrow"><div class="sublabel">축의금 인계</div><div class="subvalue" contenteditable data-empty="인계 받으실 분(신랑측/신부측) 관계·성함·연락처, 인계 시 내역 노출 방식, 세부내역 전달 방식, 정리내역 전달 이메일" id="f-handover"></div></div>
-        <div class="subrow"><div class="sublabel">비상 연락처</div><div class="subvalue" contenteditable data-empty="비상연락 1순위 / 2순위 — 관계·성함·연락처" id="f-emergency"></div></div>
-        <div class="subrow"><div class="sublabel">영상 링크 전달</div><div class="subvalue" contenteditable data-empty="영상 링크 받으실 분 (신랑측/신부측 연락처)" id="f-video"></div></div>
-        <div class="subrow"><div class="sublabel">촬영</div><div class="subvalue" contenteditable data-empty="서비스 전 과정 촬영 동의 여부 / 추가 촬영용 카메라 제공 여부" id="f-shoot"></div></div>
-        <div class="subrow"><div class="sublabel">예식 안내문</div><div class="subvalue" contenteditable data-empty="예식 안내문 제작 여부" id="f-signage"></div></div>
+        <div class="subrow"><div class="sublabel">비상 연락처</div><div class="subvalue">
+          1순위 — 관계: <span class="f" contenteditable data-empty="관계" id="f-emg1-role"></span> ·
+          성함: <span class="f" contenteditable data-empty="성함" id="f-emg1-name"></span> ·
+          연락처: <span class="f" contenteditable data-empty="연락처" id="f-emg1-phone"></span><br>
+          2순위 — 관계: <span class="f" contenteditable data-empty="관계" id="f-emg2-role"></span> ·
+          성함: <span class="f" contenteditable data-empty="성함" id="f-emg2-name"></span> ·
+          연락처: <span class="f" contenteditable data-empty="연락처" id="f-emg2-phone"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">영상 링크 전달</div><div class="subvalue">
+          신랑측: <span class="f" contenteditable data-empty="연락처" id="f-video-groom"></span> ·
+          신부측: <span class="f" contenteditable data-empty="연락처" id="f-video-bride"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">촬영</div><div class="subvalue">
+          촬영 동의: <span class="f" contenteditable data-empty="동의 여부" id="f-shoot-consent"></span> ·
+          추가 카메라 제공: <span class="f" contenteditable data-empty="제공 여부" id="f-shoot-camera"></span>
+        </div></div>
+        <div class="subrow"><div class="sublabel">예식 안내문</div><div class="subvalue"><span class="f wide" contenteditable data-empty="예식 안내문 제작 여부" id="f-signage"></span></div></div>
       </div>
     </div>
   </div>
@@ -268,9 +322,9 @@
 <div class="suggest-box">
   <h2>💡 사용 방법</h2>
   <ul>
-    <li>상단 "축의대 설정서 업로드" 버튼으로 PDF를 올리면 신랑/신부 성함, 예식일시, 주차, ATM, 식사시간, 계좌 등 일부 항목이 자동으로 채워집니다.</li>
-    <li>자동으로 채워지지 않는 항목(축의금 인계자 정보, VIP 명단, 비상연락처, 식권 돌발상황 대응 등)은 설정서를 참고해 직접 클릭해서 입력해주세요.</li>
-    <li>이 결혼식만의 특이사항(예: 식권 추가 지급 시 다른 대응방법, 주차장이 여러 곳인 경우 등)이 있다면 돌발상황 표나 해당 항목에 직접 반영해주세요.</li>
+    <li>모든 항목이 설정서 라벨 단위로 하나씩 개별 입력칸으로 나뉘어 있어, PDF를 업로드하면 각 칸에 정확히 해당하는 값만 채워집니다.</li>
+    <li>VIP 명단 표(성함·관계·연락처·지급 수량)는 설정서에서도 표 형태라 자동 인식이 어려워 직접 입력이 필요합니다.</li>
+    <li>담당 매니저 항목은 설정서에 없는 항목이라 항상 직접 입력해주세요.</li>
     <li>작성이 끝나면 "인쇄 / PDF 저장" 버튼으로 출력하고, 다음 결혼식에는 "전체 초기화" 후 새 설정서를 업로드해 재사용하세요.</li>
   </ul>
 </div>
@@ -285,48 +339,94 @@ document.getElementById('clearBtn').onclick = () => {
 
 const statusEl = document.getElementById('status');
 
-// ---- Keyword-based field extraction, tuned to Moment Works' 축의대 설정서 label wording ----
+// Each settings-form label maps to one or more unique target field ids —
+// every field in the manual now has its own dedicated input, so a value
+// never has to be split apart or composed after extraction.
 const FIELD_MAP = [
-  { id:'f-groom',        keys:['신랑 성함'] },
-  { id:'f-bride',        keys:['신부 성함'] },
-  { id:'f-datetime',     keys:['예식일','예식 시작시간','예식장','지역','홀 이름'] },
-  { id:'f-arrival',      keys:['신랑,신부님 웨딩홀 도착 예상 시간','웨딩홀 도착 예상 시간'] },
-  { id:'f-manager',      keys:['담당 매니저','현장 매니저'] },
-  { id:'f-parking',      keys:['주차 등록 방법','무료 주차 시간'] },
-  { id:'f-atm',          keys:['ATM 위치'] },
-  { id:'f-hall',         keys:['연회장 위치','신부대기실 위치'] },
-  { id:'f-mealtime',     keys:['식사 가능 시간'] },
-  { id:'f-gift',         keys:['답례품 제공 여부'] },
-  { id:'f-kids',         keys:['소인 식권의 나이 기준','소인 식권 소진 시 대인 식권 사용 가능'] },
-  { id:'f-ticket-note',  keys:['모바일 청첩장 주소','식권 교차 사용 가능 여부'] },
-  { id:'f-acct-groom',   keys:['신랑 계좌'] },
-  { id:'f-acct-bride',   keys:['신부 계좌'] },
+  { label:'신랑 성함', ids:['f-groom-name'] },
+  { label:'신부 성함', ids:['f-bride-name'] },
+  { label:'예식일', ids:['f-event-date'] },
+  { label:'예식 시작시간', ids:['f-event-time'] },
+  { label:'지역', ids:['f-region'] },
+  { label:'예식장명', ids:['f-venue-name'] },
+  { label:'홀 이름', ids:['f-hall-name'] },
+  { label:'신랑측 예상 하객 수', ids:['f-groom-guests'] },
+  { label:'신부측 예상 하객 수', ids:['f-bride-guests'] },
+  { label:'[신랑측] 혼주 성함', ids:['f-groom-parent'] },
+  { label:'[신부측] 혼주 성함', ids:['f-bride-parent'] },
+  { label:'신랑 계좌', ids:['f-acct-groom'] },
+  { label:'신부 계좌', ids:['f-acct-bride'] },
+  { label:'축의금 반환 요청 시 대응 방법', ids:['f-return-policy'] },
+  { label:'배정 식권수량(신랑측 대인)', ids:['f-ticket-groom'] },
+  { label:'배정 식권수량(신랑측 소인)', ids:['f-ticket-groom-kids'] },
+  { label:'배정 식권수량(신부측 대인)', ids:['f-ticket-bride'] },
+  { label:'배정 식권수량(신부측 소인)', ids:['f-ticket-bride-kids'] },
+  { label:'축의금 계좌이체 하객 응대 방법', ids:['f-transfer-method'] },
+  { label:'모바일 청첩장 주소', ids:['f-ticket-note'] },
+  { label:'식권 교차 사용 가능 여부', ids:['f-ticket-cross'] },
+  { label:'식권 소진 시 대응 방법', ids:['f-ticket-refill-method'] },
+  { label:'식권 소진 시 추가 수령 장소', ids:['f-ticket-refill'] },
+  { label:'소인 식권의 나이 기준', ids:['f-kids-age'] },
+  { label:'소인 식권 소진 시 대인 식권 사용 가능 여부', ids:['f-kids-swap','f-ticket-swap'] },
+  { label:'식권 추가 지급 요청 시 대응 방법', ids:['f-extra-ticket-method'] },
+  { label:'식권 추가 지급 대응(기타)', ids:['f-extra-ticket-etc'] },
+  { label:'답례품 제공 여부', ids:['f-gift'] },
+  { label:'주차 등록 방법', ids:['f-parking-method'] },
+  { label:'무료 주차 시간', ids:['f-parking-free'] },
+  { label:'ATM 위치', ids:['f-atm'] },
+  { label:'연회장 위치', ids:['f-hall-location'] },
+  { label:'신부대기실 위치', ids:['f-bride-wait'] },
+  { label:'식사 가능 시간', ids:['f-mealtime'] },
+  { label:'VIP 명단 작성 여부', ids:['f-vip-written'] },
+  { label:'인계 받으실 분(신랑측) - 관계', ids:['f-handover-groom-role'] },
+  { label:'인계 받으실 분(신랑측) - 성함', ids:['f-handover-groom-name'] },
+  { label:'인계 받으실 분(신랑측) - 연락처', ids:['f-handover-groom-phone'] },
+  { label:'인계 받으실 분(신부측) - 관계', ids:['f-handover-bride-role'] },
+  { label:'인계 받으실 분(신부측) - 성함', ids:['f-handover-bride-name'] },
+  { label:'인계 받으실 분(신부측) - 연락처', ids:['f-handover-bride-phone'] },
+  { label:'축의금 인계시, 축의금 내역 노출 여부', ids:['f-handover-disclose'] },
+  { label:'축의금 전체 세부내역 전달 방식', ids:['f-handover-detail-method'] },
+  { label:'축의금 정리내역 전달 이메일(신랑측)', ids:['f-handover-email-groom'] },
+  { label:'축의금 정리내역 전달 이메일(신부측)', ids:['f-handover-email-bride'] },
+  { label:'신랑,신부님 웨딩홀 도착 예상 시간', ids:['f-arrival'] },
+  { label:'비상연락 1순위 - 관계', ids:['f-emg1-role'] },
+  { label:'비상연락 1순위 - 성함', ids:['f-emg1-name'] },
+  { label:'비상연락 1순위 - 연락처', ids:['f-emg1-phone'] },
+  { label:'비상연락 2순위 - 관계', ids:['f-emg2-role'] },
+  { label:'비상연락 2순위 - 성함', ids:['f-emg2-name'] },
+  { label:'비상연락 2순위 - 연락처', ids:['f-emg2-phone'] },
+  { label:'서비스 전 과정 촬영 동의', ids:['f-shoot-consent'] },
+  { label:'추가 촬영용 카메라 제공 여부', ids:['f-shoot-camera'] },
+  { label:'링크 받으실 분(신랑측)', ids:['f-video-groom'] },
+  { label:'링크 받으실 분(신부측)', ids:['f-video-bride'] },
+  { label:'예식 안내문 제작 여부', ids:['f-signage'] },
 ];
 
-function extractValue(line, key){
-  const idx = line.toLowerCase().indexOf(key.toLowerCase());
-  if(idx === -1) return null;
-  let rest = line.slice(idx + key.length);
-  rest = rest.replace(/^[\s:：\-–—・.]+/, '').trim();
-  return rest.length ? rest : null;
-}
+// Longest-first so a longer label is never cut short by a shorter one
+// that happens to be a prefix of it, and so line-boundary trimming below
+// (cutting a value at the next label found) always finds the closest cut.
+const ALL_LABELS = FIELD_MAP.map(f => f.label).sort((a, b) => b.length - a.length);
 
-function parseAndFill(text){
+function buildRawMap(text){
   const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  let filled = 0;
-  FIELD_MAP.forEach(field => {
-    for(const line of lines){
-      for(const key of field.keys){
-        const val = extractValue(line, key);
-        if(val){
-          const el = document.getElementById(field.id);
-          if(el){ el.textContent = val; filled++; }
-          break;
-        }
+  const map = {};
+  for(const line of lines){
+    for(const label of ALL_LABELS){
+      if(map[label]) continue;
+      const idx = line.indexOf(label);
+      if(idx === -1) continue;
+      let rest = line.slice(idx + label.length);
+      let cut = rest.length;
+      for(const other of ALL_LABELS){
+        if(other === label) continue;
+        const p = rest.indexOf(other);
+        if(p !== -1 && p < cut) cut = p;
       }
+      let value = rest.slice(0, cut).replace(/^[\s:：\-–—・.]+/, '').trim();
+      if(value) map[label] = value;
     }
-  });
-  return filled;
+  }
+  return map;
 }
 
 document.getElementById('pdfInput').addEventListener('change', async (e) => {
@@ -350,9 +450,26 @@ document.getElementById('pdfInput').addEventListener('change', async (e) => {
       const sortedY = [...lineMap.keys()].sort((a,b) => b - a);
       sortedY.forEach(y => { fullText += lineMap.get(y).join(' ') + '\n'; });
     }
-    const filled = parseAndFill(fullText);
+    const rawMap = buildRawMap(fullText);
+
+    let filled = 0;
+    FIELD_MAP.forEach(field => {
+      const val = rawMap[field.label];
+      if(!val) return;
+      field.ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(el){ el.textContent = val; filled++; }
+      });
+    });
+
+    const groomName = document.getElementById('f-groom-name').textContent.trim();
+    const brideName = document.getElementById('f-bride-name').textContent.trim();
+    if(groomName && brideName){
+      document.getElementById('f-couple').textContent = `${groomName} · ${brideName} 결혼식`;
+    }
+
     statusEl.textContent = filled > 0
-      ? `${filled}개 항목 자동 입력 완료 · 계좌·VIP·인계자 등 세부 항목은 직접 확인해 채워주세요.`
+      ? `${filled}개 항목 자동 입력 완료 · VIP 명단 표는 직접 입력해주세요.`
       : '일치하는 항목을 찾지 못했습니다.';
   }catch(err){
     console.error(err);
