@@ -63,12 +63,16 @@
   .couplebar{
     display:flex; align-items:center; justify-content:space-between;
     background:#fff; color:var(--ink); border:2.5px solid var(--ink);
-    padding:7px 12px; border-radius:2px; margin-bottom:8px;
+    padding:6px 12px; border-radius:2px; margin-bottom:8px;
   }
-  .couplebar .names{ font-family:Georgia,serif; font-size:16px; font-weight:700; letter-spacing:.3px; color:var(--ink); }
-  .couplebar .names span{ color:var(--ink); font-weight:400; padding:0 6px; }
-  .couplebar .when{ font-size:11.5px; text-align:right; line-height:1.5; color:var(--ink); font-weight:700; }
+  .couplebar .names{ font-family:Georgia,serif; color:var(--ink); line-height:1.42; }
+  .couplebar .names .l1{ font-size:15.5px; font-weight:700; letter-spacing:.3px; }
+  .couplebar .names .l1 span{ color:var(--ink); font-weight:400; padding:0 6px; }
+  .couplebar .names .l2{ font-size:10px; font-weight:600; color:var(--ink-soft); }
+  .couplebar .names .l2 span{ font-weight:400; padding:0 4px; }
+  .couplebar .when{ font-size:10.8px; text-align:right; line-height:1.42; color:var(--ink); font-weight:700; }
   .couplebar .when b{ color:var(--ink); }
+  .couplebar .when .region{ font-weight:600; color:var(--ink-soft); font-size:10px; }
 
   .quickgrid{
     display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:8px;
@@ -157,9 +161,15 @@
   </div>
 
   <div class="couplebar">
-    <div class="names"><span id="f_groom_top">신랑측 성함</span><span>&</span><span id="f_bride_top">신부측 성함</span></div>
-    <div class="when">예식일 <b id="f_date_top">-</b> &nbsp;|&nbsp; 시작 <b id="f_time_top">-</b><br>
-      <span id="f_venue_top">예식장</span> · <span id="f_hall_top">홀</span></div>
+    <div class="names">
+      <div class="l1"><span id="f_groom_top">신랑 성함</span><span>&amp;</span><span id="f_bride_top">신부 성함</span></div>
+      <div class="l2"><span id="f_package_top" contenteditable>계약 패키지</span><span>&amp;</span><span id="f_contractside_top" contenteditable>계약 측</span></div>
+    </div>
+    <div class="when">
+      예식일 <b id="f_date_top">-</b> &nbsp;|&nbsp; 시작 <b id="f_time_top">-</b><br>
+      <span class="region" id="f_region_top" contenteditable>지역</span><br>
+      <span id="f_venue_top">예식장</span> · <span id="f_hall_top">홀</span>
+    </div>
   </div>
 
   <div class="quickgrid">
