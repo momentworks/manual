@@ -261,6 +261,7 @@
       <h3><span class="dot"></span>사진·영상 / 답례품</h3>
       <div class="row"><div class="k">전 과정 촬영 동의</div><div class="v" contenteditable id="f_photo_agree"></div></div>
       <div class="row"><div class="k">추가 카메라 제공</div><div class="v" contenteditable id="f_photo_cam"></div></div>
+      <div class="row"><div class="k">카메라 전달자</div><div class="v" contenteditable id="f_photo_cam_person"></div></div>
       <div class="row"><div class="k">답례품</div><div class="v" contenteditable id="f_gift"></div></div>
     </div>
     <div class="card">
@@ -298,6 +299,9 @@ function norm(s){
 }
 
 function stripFooter(s){
+  // guard against a footer page-number gluing directly onto the next section
+  // number with no space, e.g. "...MOMENT WORKS 1 / 405 식권 운영" (05 section)
+  s = s.replace(/(MOMENT WORKS\s*\d\s*\/\s*\d)(0[1-9]|1[0-4])(\s)/g, '$1 $2$3');
   return s.replace(/MOMENT WORKS\s*\d+\s*\/\s*\d+/g, ' ');
 }
 
@@ -362,6 +366,15 @@ async function extractPdfText(file){
 
 function parseVip(block){
   // block runs from "08 VIP 명단" to "09 축의금 인계"
+  const noneLabel = "VIP 명단 작성 여부";
+  const noneIdx = block.indexOf(noneLabel);
+  if(noneIdx !== -1){
+    const after = norm(block.slice(noneIdx + noneLabel.length));
+    // "없음" (or similar negative) with nothing else meaningful after -> no VIPs
+    if(!after || /^(없음|아니오|없다|미작성)/.test(after)){
+      return [];
+    }
+  }
   // strip header row
   const headerLabel = "성함(업체명) 관계 연락처 지급 식권 수량";
   let rest = block;
@@ -439,7 +452,10 @@ $('pdfInput').addEventListener('change', async (e) => {
 
     const f01 = extractLabels(s01, [
       {key:'groom', label:'신랑 성함'}, {key:'bride', label:'신부 성함'},
+      {key:'package', label:'계약 패키지'},
+      {key:'side', label:'한측 계약 - 계약 측'},
       {key:'date', label:'예식일'}, {key:'time', label:'예식 시작시간'},
+      {key:'region', label:'지역'},
       {key:'venue', label:'예식장명'}, {key:'hall', label:'홀 이름'},
       {key:'guest_g', label:'신랑측 예상 하객 수'}, {key:'guest_b', label:'신부측 예상 하객 수'},
     ]);
@@ -487,6 +503,7 @@ $('pdfInput').addEventListener('change', async (e) => {
     ]);
     const f12 = extractLabels(s12, [
       {key:'agree', label:'서비스 전 과정 촬영 동의'}, {key:'cam', label:'추가 촬영용 카메라 제공 여부'},
+      {key:'cam_rel', label:'추가 카메라 전달자 - 관계'}, {key:'cam_name', label:'추가 카메라 전달자 - 성함'}, {key:'cam_phone', label:'추가 카메라 전달자 - 연락처'},
       {key:'link_g', label:'링크 받으실 분(신랑측)'}, {key:'link_b', label:'링크 받으실 분(신부측)'},
     ]);
     const f13 = extractLabels(s13, [ {key:'signage', label:'예식 안내문 제작 여부'} ]);
@@ -494,8 +511,11 @@ $('pdfInput').addEventListener('change', async (e) => {
     // top strip
     setText('f_groom_top', f01.groom);
     setText('f_bride_top', f01.bride);
+    setText('f_package_top', f01.package);
+    setText('f_contractside_top', f01.side);
     setText('f_date_top', f01.date);
     setText('f_time_top', f01.time);
+    setText('f_region_top', f01.region);
     setText('f_venue_top', f01.venue);
     setText('f_hall_top', f01.hall);
 
@@ -548,6 +568,7 @@ $('pdfInput').addEventListener('change', async (e) => {
 
     setText('f_photo_agree', f12.agree);
     setText('f_photo_cam', f12.cam);
+    setText('f_photo_cam_person', [f12.cam_rel, f12.cam_name, f12.cam_phone].filter(Boolean).join(' / '));
     setText('f_gift', f06.gift);
 
     setText('f_link_g', f12.link_g);
