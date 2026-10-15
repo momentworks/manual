@@ -2,152 +2,170 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MOMENT WORKS · 파트너 안내 카드</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-  @page { size: A4; margin: 0; }
-  * { box-sizing: border-box; }
-  :root{
-    --ink:#1b1a17;
-    --ink-soft:#5a564d;
-    --paper:#fbf9f4;
-    --line:#ddd6c6;
-    --gold:#9a7b2f;
-    --gold-deep:#6f5a20;
-    --panel:#ffffff;
-    --tint:#f3efe2;
-  }
-  html,body{
-    margin:0; padding:0; background:#78766e;
-    font-family: "Noto Sans KR", "Malgun Gothic", sans-serif;
-    color:var(--ink);
-  }
-  .toolbar{
-    position:sticky; top:0; z-index:50;
-    background:#232019; color:#eee6cf;
-    padding:10px 18px; display:flex; gap:10px; align-items:center;
-    font-size:13px; flex-wrap:wrap;
-  }
-  .toolbar b{ color:#eee6cf; font-weight:700; margin-right:auto; letter-spacing:.02em;}
-  .toolbar button, .toolbar label.filebtn{
-    background:var(--gold); color:#211c0e; border:none; border-radius:3px;
-    padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer;
-    font-family:inherit;
-  }
-  .toolbar button.secondary, .toolbar label.filebtn.secondary{
-    background:transparent; color:#eee6cf; border:1px solid #55503f;
-  }
-  .toolbar input[type=file]{ display:none; }
-  #status{ font-size:12px; color:#c9bd9a; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+:root{
+  --ink:#1b1a17; --ink-soft:#5a564d; --paper:#fbf9f4; --line:#ddd6c6;
+  --gold:#9a7b2f; --gold-deep:#6f5a20; --panel:#ffffff; --tint:#f3efe2;
+  --ok:#2f6b3b; --err:#a3392b; --warn:#d9a21b;
+}
+html,body{
+  margin:0; padding:0; background:#78766e;
+  font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color:var(--ink);
+}
 
-  .sheet{
-    width:210mm; min-height:296mm;
-    margin:16px auto 40px; background:var(--paper);
-    box-shadow:0 6px 24px rgba(0,0,0,.35);
-    padding:9mm 10mm 8mm;
-    position:relative;
-  }
+/* ───── 화면 전용: 상단 도구줄 / 드롭존 ───── */
+.toolbar{
+  position:sticky; top:0; z-index:50; background:#232019; color:#eee6cf;
+  padding:10px 18px; display:flex; gap:10px; align-items:center; font-size:13px; flex-wrap:wrap;
+}
+.toolbar b{ font-weight:700; margin-right:auto; letter-spacing:.02em; }
+.toolbar button{
+  background:var(--gold); color:#211c0e; border:none; border-radius:3px;
+  padding:7px 14px; font-size:12.5px; font-weight:700; cursor:pointer; font-family:inherit;
+}
+.toolbar button.secondary{ background:transparent; color:#eee6cf; border:1px solid #55503f; }
 
-  /* ---- Letterhead ---- */
-  .head{
-    display:flex; align-items:flex-end; justify-content:space-between;
-    border-bottom:2px solid var(--ink); padding-bottom:6px; margin-bottom:7px;
-  }
-  .brand{ display:flex; align-items:center; gap:11px; flex:0 0 auto; white-space:nowrap; }
-  .logomark{ height:44px; width:auto; display:block; flex:0 0 auto; }
-  .doctitle{ font-family:Georgia,"Times New Roman",serif; font-size:19px; font-weight:700; color:var(--ink); border-left:1px solid var(--line); padding-left:11px; white-space:nowrap; flex:0 0 auto; }
-  .headright{ text-align:right; }
-  .headright .role{ font-size:10.5px; color:var(--gold-deep); font-weight:700; }
-  .headright .sub{ font-size:9.5px; color:var(--ink-soft); }
+.dz-wrap{ width:210mm; max-width:calc(100vw - 24px); margin:14px auto 0; }
+.dropzone{
+  display:block; width:100%; text-align:center; cursor:pointer; user-select:none;
+  background:#2c2920; color:#eee6cf; border:2px dashed #7d7456; border-radius:6px;
+  padding:16px 18px; font-family:inherit; transition:background .15s,border-color .15s;
+}
+.dropzone:hover, .dropzone:focus-visible{ background:#36322a; border-color:var(--gold); outline:none; }
+.dropzone .dz-main{ font-size:15px; font-weight:700; }
+.dropzone .dz-sub{ font-size:12px; color:#c9bd9a; margin-top:4px; line-height:1.5; }
+.dropzone[data-state="busy"]{ border-style:solid; border-color:var(--gold); }
+.dropzone[data-state="ok"]{ border-style:solid; border-color:#5f9a6b; }
+.dropzone[data-state="ok"] .dz-main{ color:#bfe3c6; }
+.dropzone[data-state="err"]{ border-style:solid; border-color:#c46a5c; }
+.dropzone[data-state="err"] .dz-main{ color:#f3b9b0; }
 
-  .couplebar{
-    display:flex; align-items:center; justify-content:space-between;
-    background:#fff; color:var(--ink); border:2.5px solid var(--ink);
-    padding:6px 12px; border-radius:2px; margin-bottom:8px;
-  }
-  .couplebar .names{ font-family:Georgia,serif; color:var(--ink); line-height:1.42; }
-  .couplebar .names .l1{ font-size:15.5px; font-weight:700; letter-spacing:.3px; }
-  .couplebar .names .l1 span{ color:var(--ink); font-weight:400; padding:0 6px; }
-  .couplebar .names .l2{ font-size:10px; font-weight:600; color:var(--ink-soft); }
-  .couplebar .names .l2 span{ font-weight:400; padding:0 4px; }
-  .couplebar .when{ font-size:10.8px; text-align:right; line-height:1.42; color:var(--ink); font-weight:700; }
-  .couplebar .when b{ color:var(--ink); }
-  .couplebar .when .region{ font-weight:600; color:var(--ink-soft); font-size:10px; }
+.drop-overlay{
+  display:none; position:fixed; inset:0; z-index:100; background:rgba(27,26,23,.78);
+  align-items:center; justify-content:center; pointer-events:none;
+}
+.drop-overlay div{
+  border:3px dashed var(--gold); border-radius:14px; padding:46px 70px; color:#fff;
+  font-size:22px; font-weight:700; background:rgba(35,32,25,.9);
+}
+body.dragging .drop-overlay{ display:flex; }
 
-  .quickgrid{
-    display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:8px;
-  }
-  .qcell{
-    background:var(--panel); border:1px solid var(--line); border-radius:2px;
-    padding:5px 8px;
-  }
-  .qcell .lab{ font-size:8.8px; color:var(--gold-deep); font-weight:700; margin-bottom:2px; }
-  .qcell .val{ font-size:12.5px; font-weight:600; }
+.fit-badge{ width:210mm; max-width:calc(100vw - 24px); margin:8px auto 0; font-size:11.5px; color:#f1e6c2; min-height:1em; }
 
-  .cols{ display:grid; grid-template-columns:1fr 1fr; gap:8mm; }
-  .col > .card + .card{ margin-top:6px; }
+/* ───── 카드 본문 (글자·간격은 모두 em: --fs 하나로 전체가 함께 줄어든다) ───── */
+.sheet{
+  --fs:10.6px;
+  font-size:var(--fs);
+  width:210mm; height:297mm; overflow:hidden;
+  margin:10px auto 40px; background:var(--paper);
+  box-shadow:0 6px 24px rgba(0,0,0,.35);
+  padding:8mm 10mm 7mm; position:relative;
+}
+.content{ width:100%; }
 
-  .card{
-    background:var(--panel); border:1px solid var(--line); border-radius:2px;
-    padding:9px 11px 10px; page-break-inside:avoid;
-  }
-  .card h3{
-    margin:0 0 6px; font-size:12.5px; font-family:Georgia,serif; font-weight:700;
-    color:var(--ink); border-bottom:1px solid var(--gold); padding-bottom:4px;
-    display:flex; align-items:center; gap:5px;
-  }
-  .card h3 .dot{ width:5px; height:5px; border-radius:50%; background:var(--gold); display:inline-block; }
+.head{ display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:2px solid var(--ink); padding-bottom:.55em; margin-bottom:.6em; }
+.brand{ display:flex; align-items:center; gap:1em; white-space:nowrap; }
+.logomark{ height:4.1em; width:auto; display:block; }
+.doctitle{ font-family:Georgia,"Times New Roman",serif; font-size:1.75em; font-weight:700;
+  border-left:1px solid var(--line); padding-left:.6em; white-space:nowrap; }
+.headright{ text-align:right; }
+.headright .role{ font-size:.98em; color:var(--gold-deep); font-weight:700; }
+.headright .sub{ font-size:.88em; color:var(--ink-soft); }
 
-  .row{ display:flex; font-size:11.3px; line-height:1.55; padding:2.5px 0; border-bottom:1px dotted #e6e0cf; }
-  .row:last-child{ border-bottom:none; }
-  .row .k{ flex:0 0 34%; color:var(--ink-soft); font-weight:600; }
-  .row .v{ flex:1; font-weight:500; word-break:break-word; }
-  .row .v[contenteditable], .qcell .val[contenteditable]{ outline:none; border-radius:2px; }
-  .row .v[contenteditable]:focus, .qcell .val[contenteditable]:focus{ background:#fff7dd; }
+.couplebar{ display:flex; align-items:center; justify-content:space-between; gap:1em;
+  background:#fff; border:2.5px solid var(--ink); padding:.55em 1.1em; border-radius:2px; margin-bottom:.7em; }
+.couplebar .names{ font-family:Georgia,serif; line-height:1.4; min-width:0; }
+.couplebar .l1{ font-size:1.5em; font-weight:700; letter-spacing:.02em; }
+.couplebar .l1 .amp, .couplebar .l2 .amp{ font-weight:400; padding:0 .45em; }
+.couplebar .l2{ font-size:.95em; font-weight:600; color:var(--ink-soft); }
+.couplebar .when{ font-size:1.02em; text-align:right; line-height:1.42; font-weight:700; min-width:0; }
+.couplebar .when .region{ font-weight:600; color:var(--ink-soft); font-size:.95em; }
 
-  .pairgrid{ display:grid; grid-template-columns:1fr 1fr; gap:0 8px; }
+.quickgrid{ display:grid; grid-template-columns:repeat(4,1fr); gap:.55em; margin-bottom:.7em; }
+.qcell{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:.45em .75em; min-width:0; }
+.qcell .lab{ font-size:.82em; color:var(--gold-deep); font-weight:700; margin-bottom:.15em; }
+.qcell .val{ font-size:1.18em; font-weight:600; }
 
-  table.vip{ width:100%; border-collapse:collapse; font-size:10.6px; }
-  table.vip th{
-    background:var(--tint); font-weight:700; color:var(--gold-deep);
-    text-align:left; padding:4px 5px; border:1px solid var(--line);
-  }
-  table.vip td{ padding:5px 5px; border:1px solid var(--line); }
-  table.vip td[contenteditable]{ outline:none; }
-  table.vip td[contenteditable]:focus{ background:#fff7dd; }
-  .addrow{ margin-top:4px; font-size:9px; color:var(--gold-deep); background:none; border:1px dashed var(--gold-deep); border-radius:2px; padding:2px 8px; cursor:pointer; font-family:inherit;}
+.cols{ display:grid; grid-template-columns:1fr 1fr; gap:7.5mm; }
+.col{ min-width:0; }
+.col > .card + .card{ margin-top:.55em; }
 
-  .footstrip{
-    margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8mm;
-  }
-  .footstrip .row .k{ flex:0 0 40%; }
+.card{ background:var(--panel); border:1px solid var(--line); border-radius:2px;
+  padding:.75em .95em .8em; page-break-inside:avoid; break-inside:avoid; }
+.card h3{ margin:0 0 .45em; font-size:1.14em; font-family:Georgia,serif; font-weight:700;
+  border-bottom:1px solid var(--gold); padding-bottom:.3em; display:flex; align-items:center; gap:.45em; }
+.card h3 .dot{ width:.45em; height:.45em; border-radius:50%; background:var(--gold); display:inline-block; }
 
-  .note{
-    margin-top:6px; font-size:8.5px; color:var(--ink-soft); text-align:center;
-    border-top:1px dashed var(--line); padding-top:4px;
-  }
+.row{ display:flex; gap:.5em; line-height:1.45; padding:.17em 0; border-bottom:1px dotted #e6e0cf; }
+.row:last-child{ border-bottom:none; }
+.row .k{ flex:0 0 33%; color:var(--ink-soft); font-weight:600; }
+.row .v{ flex:1; font-weight:500; word-break:break-word; min-width:0; }
+.pairgrid{ display:grid; grid-template-columns:1fr 1fr; gap:0 .8em; }
+.pairgrid .row .k{ flex-basis:48%; }
+.footstrip .row .k{ flex-basis:38%; }
 
-  @media print{
-    body{ background:#fff; }
-    .toolbar{ display:none; }
-    .sheet{ margin:0; box-shadow:none; width:210mm; min-height:297mm; }
-  }
+/* 편집 가능한 칸 */
+[contenteditable]{ outline:none; border-radius:2px; }
+[contenteditable]:hover{ background:rgba(154,123,47,.08); }
+[contenteditable]:focus{ background:#fff7dd; box-shadow:0 0 0 1px var(--gold); }
+/* 비어 있으면 '-' 로 표시 (실제 글자가 아니라서 지우기·수정이 쉽다) */
+.v:empty::before, .val:empty::before, .when b:empty::before{ content:"-"; color:#aaa395; }
+.l1 [data-k]:empty::before, .l2 [data-k]:empty::before, .region:empty::before{ content:attr(data-ph); color:#b9b2a1; font-weight:400; }
+.when [data-k]:empty::before{ content:attr(data-ph); color:#b9b2a1; font-weight:400; }
+/* 설정서에 없던 항목 (화면에서만) */
+.missing{ box-shadow:inset 0 -2px 0 -1px var(--warn); }
+.missing:focus{ box-shadow:0 0 0 1px var(--gold); }
+
+table.vip{ width:100%; border-collapse:collapse; font-size:1em; }
+table.vip th{ background:var(--tint); font-weight:700; color:var(--gold-deep); text-align:left;
+  padding:.3em .4em; border:1px solid var(--line); }
+table.vip td{ padding:.32em .4em; border:1px solid var(--line); word-break:break-word; }
+.vipbtns{ margin-top:.35em; display:flex; gap:.4em; }
+.vipbtns button{ font-size:.85em; color:var(--gold-deep); background:none; border:1px dashed var(--gold-deep);
+  border-radius:2px; padding:.1em .7em; cursor:pointer; font-family:inherit; }
+
+.footstrip{ margin-top:.6em; display:grid; grid-template-columns:1fr 1fr; gap:7.5mm; }
+.note{ margin-top:.5em; font-size:.8em; color:var(--ink-soft); text-align:center;
+  border-top:1px dashed var(--line); padding-top:.35em; }
+
+@media print{
+  html,body{ background:#fff; }
+  .toolbar,.dz-wrap,.fit-badge,.drop-overlay,.vipbtns{ display:none !important; }
+  .sheet{ margin:0; box-shadow:none; width:210mm; height:296.5mm; }
+  [contenteditable]:hover, [contenteditable]:focus{ background:none; box-shadow:none; }
+  .missing{ box-shadow:none; }
+  .l1 [data-k]:empty::before, .l2 [data-k]:empty::before, .when [data-k]:empty::before, .region:empty::before{ content:""; }
+}
+
 </style>
 </head>
 <body>
 
 <div class="toolbar">
   <b>MOMENT WORKS · 파트너 안내 카드</b>
-  <label class="filebtn">
-    설정서 PDF 업로드
-    <input type="file" id="pdfInput" accept="application/pdf">
-  </label>
   <button class="secondary" id="clearBtn" type="button">전체 비우기</button>
   <button id="printBtn" type="button">PDF로 인쇄/저장</button>
-  <span id="status"></span>
 </div>
 
+<div class="dz-wrap">
+  <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-live="polite" aria-label="설정서 PDF 업로드">
+    <div class="dz-main" id="dzMain"></div>
+    <div class="dz-sub" id="dzSub"></div>
+    <input type="file" id="pdfInput" accept="application/pdf,.pdf" hidden>
+  </div>
+</div>
+<div class="fit-badge" id="fitBadge"></div>
+<div class="drop-overlay"><div>설정서 PDF를 여기에 놓으면 불러와요</div></div>
+
 <div class="sheet" id="sheet">
+<div class="content" id="content">
 
   <div class="head">
     <div class="brand">
@@ -162,425 +180,638 @@
 
   <div class="couplebar">
     <div class="names">
-      <div class="l1"><span id="f_groom_top">신랑 성함</span><span>&amp;</span><span id="f_bride_top">신부 성함</span></div>
-      <div class="l2"><span id="f_package_top" contenteditable>계약 패키지</span><span>&amp;</span><span id="f_contractside_top" contenteditable>계약 측</span></div>
+      <div class="l1"><span contenteditable data-k="groom" data-ph="신랑 성함"></span><span class="amp">&amp;</span><span contenteditable data-k="bride" data-ph="신부 성함"></span></div>
+      <div class="l2"><span contenteditable data-k="package" data-ph="계약 패키지"></span><span class="amp">&amp;</span><span contenteditable data-k="halfside" data-ph="계약 측"></span></div>
     </div>
     <div class="when">
-      예식일 <b id="f_date_top">-</b> &nbsp;|&nbsp; 시작 <b id="f_time_top">-</b><br>
-      <span class="region" id="f_region_top" contenteditable>지역</span><br>
-      <span id="f_venue_top">예식장</span> · <span id="f_hall_top">홀</span>
+      예식일 <b contenteditable data-k="date" data-ph="-"></b> &nbsp;|&nbsp; 시작 <b contenteditable data-k="time" data-ph="-"></b><br>
+      <span class="region" contenteditable data-k="region" data-ph="지역"></span><br>
+      <span contenteditable data-k="venue" data-ph="예식장명"></span> · <span contenteditable data-k="hall" data-ph="홀 이름"></span>
     </div>
   </div>
 
   <div class="quickgrid">
-    <div class="qcell"><div class="lab">신랑측 예상 하객</div><div class="val" contenteditable id="f_guest_g">-</div></div>
-    <div class="qcell"><div class="lab">신부측 예상 하객</div><div class="val" contenteditable id="f_guest_b">-</div></div>
-    <div class="qcell"><div class="lab">관계 설정</div><div class="val" contenteditable id="f_relation">-</div></div>
-    <div class="qcell"><div class="lab">도착 예상 시간</div><div class="val" contenteditable id="f_arrival">-</div></div>
+    <div class="qcell"><div class="lab">신랑측 예상 하객</div><div class="val" contenteditable data-k="guest_g"></div></div>
+    <div class="qcell"><div class="lab">신부측 예상 하객</div><div class="val" contenteditable data-k="guest_b"></div></div>
+    <div class="qcell"><div class="lab">관계 설정</div><div class="val" contenteditable data-k="relation"></div></div>
+    <div class="qcell"><div class="lab">도착 예상 시간</div><div class="val" contenteditable data-k="arrival"></div></div>
   </div>
 
   <div class="cols">
-    <!-- LEFT COLUMN -->
     <div class="col">
-
-      <div class="card">
-        <h3><span class="dot"></span>예식 기본정보</h3>
-        <div class="row"><div class="k">신랑 성함</div><div class="v" contenteditable id="f_groom"></div></div>
-        <div class="row"><div class="k">신부 성함</div><div class="v" contenteditable id="f_bride"></div></div>
-        <div class="row"><div class="k">예식장 / 홀</div><div class="v" contenteditable id="f_venue"></div></div>
-        <div class="row"><div class="k">신랑측 혼주</div><div class="v" contenteditable id="f_parents_g"></div></div>
-        <div class="row"><div class="k">신부측 혼주</div><div class="v" contenteditable id="f_parents_b"></div></div>
-      </div>
-
-      <div class="card">
-        <h3><span class="dot"></span>축의금 정리방식</h3>
-        <div class="row"><div class="k">정리 방식</div><div class="v" contenteditable id="f_money_way"></div></div>
-        <div class="row"><div class="k">계좌이체 접수</div><div class="v" contenteditable id="f_transfer_yn"></div></div>
-        <div class="row"><div class="k">신랑 계좌</div><div class="v" contenteditable id="f_acc_g"></div></div>
-        <div class="row"><div class="k">신부 계좌</div><div class="v" contenteditable id="f_acc_b"></div></div>
-        <div class="row"><div class="k">반환 요청 대응</div><div class="v" contenteditable id="f_refund"></div></div>
-      </div>
-
-      <div class="card">
-        <h3><span class="dot"></span>식권 운영</h3>
-        <div class="pairgrid">
-          <div class="row"><div class="k">신랑측 대인</div><div class="v" contenteditable id="f_tk_g_a"></div></div>
-          <div class="row"><div class="k">신랑측 소인</div><div class="v" contenteditable id="f_tk_g_c"></div></div>
-          <div class="row"><div class="k">신부측 대인</div><div class="v" contenteditable id="f_tk_b_a"></div></div>
-          <div class="row"><div class="k">신부측 소인</div><div class="v" contenteditable id="f_tk_b_c"></div></div>
-        </div>
-        <div class="row"><div class="k">계좌이체 하객 응대</div><div class="v" contenteditable id="f_tk_contact"></div></div>
-        <div class="row"><div class="k">모바일 청첩장 주소</div><div class="v" contenteditable id="f_tk_invite"></div></div>
-        <div class="row"><div class="k">교차 사용</div><div class="v" contenteditable id="f_tk_cross"></div></div>
-        <div class="row"><div class="k">소진 시 대응</div><div class="v" contenteditable id="f_tk_out"></div></div>
-        <div class="row"><div class="k">소진 시 수령 장소</div><div class="v" contenteditable id="f_tk_place"></div></div>
-        <div class="row"><div class="k">소인 나이 기준</div><div class="v" contenteditable id="f_tk_age"></div></div>
-        <div class="row"><div class="k">추가 지급 요청 대응</div><div class="v" contenteditable id="f_tk_extra"></div></div>
-      </div>
-
+<div class="card"><h3><span class="dot"></span>예식 기본정보</h3>
+<div class="row"><div class="k">신랑 성함</div><div class="v" contenteditable data-k="groom"></div></div>
+<div class="row"><div class="k">신부 성함</div><div class="v" contenteditable data-k="bride"></div></div>
+<div class="row"><div class="k">예식장명</div><div class="v" contenteditable data-k="venue"></div></div>
+<div class="row"><div class="k">홀 이름</div><div class="v" contenteditable data-k="hall"></div></div>
+<div class="row"><div class="k">신랑측 혼주</div><div class="v" contenteditable data-k="parents_g"></div></div>
+<div class="row"><div class="k">신부측 혼주</div><div class="v" contenteditable data-k="parents_b"></div></div>
+<div class="row"><div class="k">가족 인지 여부</div><div class="v" contenteditable data-k="aware"></div></div></div>
+<div class="card"><h3><span class="dot"></span>축의금 정리방식</h3>
+<div class="row"><div class="k">정리 방식</div><div class="v" contenteditable data-k="money_way"></div></div>
+<div class="row"><div class="k">계좌이체 접수</div><div class="v" contenteditable data-k="transfer_yn"></div></div>
+<div class="row"><div class="k">신랑 계좌</div><div class="v" contenteditable data-k="acc_g"></div></div>
+<div class="row"><div class="k">신부 계좌</div><div class="v" contenteditable data-k="acc_b"></div></div>
+<div class="row"><div class="k">반환 요청 대응</div><div class="v" contenteditable data-k="refund"></div></div></div>
+<div class="card"><h3><span class="dot"></span>식권 운영</h3>
+<div class="pairgrid"><div class="row"><div class="k">신랑측 대인</div><div class="v" contenteditable data-k="tk_g_a"></div></div><div class="row"><div class="k">신랑측 소인</div><div class="v" contenteditable data-k="tk_g_c"></div></div><div class="row"><div class="k">신부측 대인</div><div class="v" contenteditable data-k="tk_b_a"></div></div><div class="row"><div class="k">신부측 소인</div><div class="v" contenteditable data-k="tk_b_c"></div></div></div>
+<div class="row"><div class="k">계좌이체 하객 응대</div><div class="v" contenteditable data-k="tk_contact"></div></div>
+<div class="row"><div class="k">모바일 청첩장 주소</div><div class="v" contenteditable data-k="tk_invite"></div></div>
+<div class="row"><div class="k">교차 사용</div><div class="v" contenteditable data-k="tk_cross"></div></div>
+<div class="row"><div class="k">소진 시 대응</div><div class="v" contenteditable data-k="tk_out"></div></div>
+<div class="row"><div class="k">소진 시 수령 장소</div><div class="v" contenteditable data-k="tk_place"></div></div>
+<div class="row"><div class="k">소인 나이 기준</div><div class="v" contenteditable data-k="tk_age"></div></div>
+<div class="row"><div class="k">소인→대인 사용</div><div class="v" contenteditable data-k="tk_child_swap"></div></div>
+<div class="row"><div class="k">추가 지급 요청 대응</div><div class="v" contenteditable data-k="tk_extra"></div></div></div>
     </div>
-
-    <!-- RIGHT COLUMN -->
     <div class="col">
-
-      <div class="card">
-        <h3><span class="dot"></span>하객 안내사항</h3>
-        <div class="row"><div class="k">주차</div><div class="v" contenteditable id="f_parking"></div></div>
-        <div class="row"><div class="k">ATM 위치</div><div class="v" contenteditable id="f_atm"></div></div>
-        <div class="row"><div class="k">연회장 위치</div><div class="v" contenteditable id="f_hallpos"></div></div>
-        <div class="row"><div class="k">신부대기실</div><div class="v" contenteditable id="f_waiting"></div></div>
-        <div class="row"><div class="k">식사 가능 시간</div><div class="v" contenteditable id="f_meal"></div></div>
-      </div>
-
-      <div class="card">
-        <h3><span class="dot"></span>VIP 명단</h3>
-        <table class="vip" id="vipTable">
-          <thead><tr><th style="width:30%">성함(업체명)</th><th style="width:18%">관계</th><th style="width:26%">연락처</th><th>지급 식권</th></tr></thead>
-          <tbody id="vipBody">
-            <tr><td contenteditable></td><td contenteditable></td><td contenteditable></td><td contenteditable></td></tr>
-            <tr><td contenteditable></td><td contenteditable></td><td contenteditable></td><td contenteditable></td></tr>
-          </tbody>
-        </table>
-        <button class="addrow" id="addVipBtn" type="button">+ 행 추가</button>
-      </div>
-
-      <div class="card">
-        <h3><span class="dot"></span>축의금 인계 &amp; 긴급연락처</h3>
-        <div class="row"><div class="k">인계자(신랑측)</div><div class="v" contenteditable id="f_hand_g"></div></div>
-        <div class="row"><div class="k">인계자(신부측)</div><div class="v" contenteditable id="f_hand_b"></div></div>
-        <div class="row"><div class="k">내역 노출 방식</div><div class="v" contenteditable id="f_hand_disclose"></div></div>
-        <div class="row"><div class="k">비상연락 1순위</div><div class="v" contenteditable id="f_emg1"></div></div>
-        <div class="row"><div class="k">비상연락 2순위</div><div class="v" contenteditable id="f_emg2"></div></div>
-      </div>
-
+<div class="card"><h3><span class="dot"></span>하객 안내사항</h3>
+<div class="row"><div class="k">주차 등록 방법</div><div class="v" contenteditable data-k="parking"></div></div>
+<div class="row"><div class="k">무료 주차 시간</div><div class="v" contenteditable data-k="parking_free"></div></div>
+<div class="row"><div class="k">ATM 위치</div><div class="v" contenteditable data-k="atm"></div></div>
+<div class="row"><div class="k">연회장 위치</div><div class="v" contenteditable data-k="hallpos"></div></div>
+<div class="row"><div class="k">신부대기실</div><div class="v" contenteditable data-k="waiting"></div></div>
+<div class="row"><div class="k">식사 가능 시간</div><div class="v" contenteditable data-k="meal"></div></div></div>
+<div class="card"><h3><span class="dot"></span>VIP 명단</h3>
+<table class="vip" id="vipTable"><thead><tr><th style="width:30%">성함(업체명)</th><th style="width:20%">관계</th><th style="width:26%">연락처</th><th>지급 식권</th></tr></thead><tbody id="vipBody"></tbody></table><div class="vipbtns"><button type="button" id="addVipBtn">+ 행 추가</button><button type="button" id="delVipBtn">− 마지막 행 삭제</button></div></div>
+<div class="card"><h3><span class="dot"></span>축의금 인계 &amp; 긴급연락처</h3>
+<div class="row"><div class="k">인계자(신랑측)</div><div class="v" contenteditable data-k="hand_g"></div></div>
+<div class="row"><div class="k">인계자(신부측)</div><div class="v" contenteditable data-k="hand_b"></div></div>
+<div class="row"><div class="k">내역 노출 방식</div><div class="v" contenteditable data-k="hand_disclose"></div></div>
+<div class="row"><div class="k">세부내역 전달 방식</div><div class="v" contenteditable data-k="hand_method"></div></div>
+<div class="row"><div class="k">정리내역 이메일(신랑측)</div><div class="v" contenteditable data-k="email_g"></div></div>
+<div class="row"><div class="k">정리내역 이메일(신부측)</div><div class="v" contenteditable data-k="email_b"></div></div>
+<div class="row"><div class="k">비상연락 1순위</div><div class="v" contenteditable data-k="emg1"></div></div>
+<div class="row"><div class="k">비상연락 2순위</div><div class="v" contenteditable data-k="emg2"></div></div></div>
     </div>
   </div>
 
   <div class="footstrip">
-    <div class="card">
-      <h3><span class="dot"></span>사진·영상 / 답례품</h3>
-      <div class="row"><div class="k">전 과정 촬영 동의</div><div class="v" contenteditable id="f_photo_agree"></div></div>
-      <div class="row"><div class="k">추가 카메라 제공</div><div class="v" contenteditable id="f_photo_cam"></div></div>
-      <div class="row"><div class="k">카메라 전달자</div><div class="v" contenteditable id="f_photo_cam_person"></div></div>
-      <div class="row"><div class="k">답례품</div><div class="v" contenteditable id="f_gift"></div></div>
-    </div>
-    <div class="card">
-      <h3><span class="dot"></span>영상 링크 수신 / 안내문</h3>
-      <div class="row"><div class="k">링크 수신(신랑측)</div><div class="v" contenteditable id="f_link_g"></div></div>
-      <div class="row"><div class="k">링크 수신(신부측)</div><div class="v" contenteditable id="f_link_b"></div></div>
-      <div class="row"><div class="k">예식 안내문 제작</div><div class="v" contenteditable id="f_signage"></div></div>
-    </div>
+<div class="card"><h3><span class="dot"></span>사진·영상 / 답례품</h3>
+<div class="row"><div class="k">전 과정 촬영 동의</div><div class="v" contenteditable data-k="photo_agree"></div></div>
+<div class="row"><div class="k">추가 카메라 제공</div><div class="v" contenteditable data-k="photo_cam"></div></div>
+<div class="row"><div class="k">카메라 전달자</div><div class="v" contenteditable data-k="cam_person"></div></div>
+<div class="row"><div class="k">답례품</div><div class="v" contenteditable data-k="gift"></div></div></div>
+<div class="card"><h3><span class="dot"></span>영상 링크 수신 / 안내문</h3>
+<div class="row"><div class="k">링크 수신(신랑측)</div><div class="v" contenteditable data-k="link_g"></div></div>
+<div class="row"><div class="k">링크 수신(신부측)</div><div class="v" contenteditable data-k="link_b"></div></div>
+<div class="row"><div class="k">예식 안내문 제작</div><div class="v" contenteditable data-k="signage"></div></div></div>
   </div>
 
   <div class="note">본 카드는 축의대 설정서의 요약본입니다. 세부 전체 내역은 축의대 안내사항 매뉴얼 원본을 참고하세요. · MOMENT WORKS</div>
 </div>
+</div>
 
 <script>
-pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+/* MOMENT WORKS · 파트너 예식 안내 카드
+ * 설정서 PDF → 항목별 값 불러오기
+ *
+ * 지원하는 PDF 형식 (자동 판별)
+ *  1) 복원 데이터형 : 마지막 쪽에 --MW-DATA-START-- base64 JSON 이 들어 있는 PDF (가장 정확)
+ *  2) 글머리형     : "■ 01. 예식 기본정보" / "- 라벨: 값"
+ *  3) 표형(텍스트) : "01 예식 기본정보" / "라벨   값"
+ *  글자 정보가 없는 순수 이미지 PDF는 읽을 수 없습니다(직접 입력).
+ */
+(function(){
+'use strict';
 
-const $ = id => document.getElementById(id);
-const setStatus = t => { $('status').textContent = t; };
-
-function setText(id, v){
-  const el = $(id);
-  if(!el) return;
-  el.textContent = (v && v.trim()) ? v.trim() : '-';
-}
-
-const SECTION_ANCHORS = [
-  "01 예식 기본정보","02 양가 정보","03 관계 설정","04 축의금 정리방식",
-  "05 식권 운영","06 답례품","07 하객 안내사항","08 VIP 명단",
-  "09 축의금 인계","10 당일 일정","11 긴급상황 대응","12 사진 및 영상촬영",
-  "13 예식 안내문 제작 여부","14 동의 및 확인"
+/* ───────────── 라벨 사전 ─────────────
+ * k  : 카드 항목 키
+ * p  : 설정서에 인쇄되는 라벨 (띄어쓰기는 있어도/없어도 매칭)
+ * re : 직접 지정하는 정규식 (선택)
+ */
+const LABELS = [
+  // 01 예식 기본정보
+  {k:'groom',   p:'신랑 성함'},
+  {k:'bride',   p:'신부 성함'},
+  {k:'package', p:'계약 패키지'},
+  {k:'halfside',re:'\\S{0,4}\\s*계약\\s*-\\s*계약\\s*측'},   // "한측 계약 - 계약 측"
+  {k:'date',    p:'예식일'},
+  {k:'time',    p:'예식 시작시간'},
+  {k:'region',  p:'지역'},
+  {k:'venue',   p:'예식장명'},
+  {k:'hall',    p:'홀 이름'},
+  {k:'guest_g', p:'신랑측 예상 하객 수'},
+  {k:'guest_b', p:'신부측 예상 하객 수'},
+  // 02 양가 정보
+  {k:'parents_g', p:'[신랑측] 혼주 성함'},
+  {k:'parents_b', p:'[신부측] 혼주 성함'},
+  // 03 관계 설정
+  {k:'aware',   p:'축의업체 인지사항(가족 인지 여부)'},
+  {k:'relation',p:'관계 설정'},
+  // 04 축의금 정리방식
+  {k:'money_way', p:'축의금 정리 방식'},
+  {k:'transfer_yn', p:'계좌이체 받을 예정'},
+  {k:'acc_g',   p:'신랑 계좌'},
+  {k:'acc_b',   p:'신부 계좌'},
+  {k:'refund',  p:'축의금 반환 요청 시 대응 방법'},
+  // 05 식권 운영
+  {k:'tk_g_a',  p:'배정 식권수량(신랑측 대인)'},
+  {k:'tk_g_c',  p:'배정 식권수량(신랑측 소인)'},
+  {k:'tk_b_a',  p:'배정 식권수량(신부측 대인)'},
+  {k:'tk_b_c',  p:'배정 식권수량(신부측 소인)'},
+  {k:'tk_contact', p:'축의금 계좌이체 하객 응대 방법'},
+  {k:'tk_invite',  p:'모바일 청첩장 주소'},
+  {k:'tk_cross',   p:'식권 교차 사용 가능 여부'},
+  {k:'tk_out',     p:'식권 소진 시 대응 방법'},
+  {k:'tk_place',   p:'식권 소진 시 추가 수령 장소'},
+  {k:'tk_age',     p:'소인 식권의 나이 기준'},
+  {k:'tk_child_swap', p:'소인 식권 소진 시 대인 식권 사용 가능 여부'},
+  // 라벨이 두 줄로 꺾여 "…사용 가능 [값] / 여부" 로 읽히는 경우
+  {k:'tk_child_swap', p:'소인 식권 소진 시 대인 식권 사용 가능', wrapped:true},
+  {k:'tk_extra',     p:'식권 추가 지급 요청 시 대응 방법'},
+  {k:'tk_extra_etc', p:'식권 추가 지급 대응(기타)'},
+  // 06 답례품
+  {k:'gift',        p:'답례품 제공 여부'},
+  // 07 하객 안내사항
+  {k:'parking',     p:'주차 등록 방법'},
+  {k:'parking_free',p:'무료 주차 시간'},
+  {k:'atm',         p:'ATM 위치'},
+  {k:'hallpos',     p:'연회장 위치'},
+  {k:'waiting',     p:'신부대기실 위치'},
+  {k:'meal',        p:'식사 가능 시간'},
+  // 08 VIP
+  {k:'vip_flag',    p:'VIP 명단 작성 여부'},
+  // 09 축의금 인계
+  {k:'hand_g_rel',  p:'인계 받으실 분(신랑측) - 관계'},
+  {k:'hand_g_name', p:'인계 받으실 분(신랑측) - 성함'},
+  {k:'hand_g_phone',p:'인계 받으실 분(신랑측) - 연락처'},
+  {k:'hand_b_rel',  p:'인계 받으실 분(신부측) - 관계'},
+  {k:'hand_b_name', p:'인계 받으실 분(신부측) - 성함'},
+  {k:'hand_b_phone',p:'인계 받으실 분(신부측) - 연락처'},
+  {k:'hand_disclose',p:'축의금 인계시, 축의금 내역 노출 여부'},
+  {k:'hand_method', p:'축의금 전체 세부내역 전달 방식'},
+  {k:'email_g',     p:'축의금 정리내역 전달 이메일(신랑측)'},
+  {k:'email_b',     p:'축의금 정리내역 전달 이메일(신부측)'},
+  {k:'email',       p:'축의금 정리내역 전달 이메일'},
+  // 10 당일 일정
+  {k:'arrival',     p:'신랑,신부님 웨딩홀 도착 예상 시간'},
+  // 11 긴급상황 대응
+  {k:'e1_rel',  p:'비상연락 1순위 - 관계'},
+  {k:'e1_name', p:'비상연락 1순위 - 성함'},
+  {k:'e1_phone',p:'비상연락 1순위 - 연락처'},
+  {k:'e2_rel',  p:'비상연락 2순위 - 관계'},
+  {k:'e2_name', p:'비상연락 2순위 - 성함'},
+  {k:'e2_phone',p:'비상연락 2순위 - 연락처'},
+  {k:'e1_all',  p:'비상연락 1순위'},
+  {k:'e2_all',  p:'비상연락 2순위'},
+  // 12 사진 및 영상촬영
+  {k:'photo_agree', p:'서비스 전 과정 촬영 동의'},
+  {k:'photo_cam',   p:'추가 촬영용 카메라 제공 여부'},
+  {k:'cam_rel',     p:'추가 카메라 전달자 - 관계'},
+  {k:'cam_name',    p:'추가 카메라 전달자 - 성함'},
+  {k:'cam_phone',   p:'추가 카메라 전달자 - 연락처'},
+  {k:'link_g',      p:'링크 받으실 분(신랑측)'},
+  {k:'link_b',      p:'링크 받으실 분(신부측)'},
+  // 13·14
+  {k:'signage',     p:'예식 안내문 제작 여부'},
+  {k:'contractor',  p:'계약자 성함'},
 ];
 
-function norm(s){
-  return s.replace(/\s+/g, ' ').trim();
+const SECTION_TITLES = {
+  '01':'예식 기본정보','02':'양가 정보','03':'관계 설정','04':'축의금 정리방식',
+  '05':'식권 운영','06':'답례품','07':'하객 안내사항','08':'VIP 명단',
+  '09':'축의금 인계','10':'당일 일정','11':'긴급상황 대응','12':'사진 및 영상촬영',
+  '13':'예식 안내문 제작 여부','14':'동의 및 확인'
+};
+
+const esc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const patToRe = p => p.trim().split(/\s+/).map(esc).join('\\s*');
+
+// 긴 라벨이 먼저 시도되도록 정렬 ("비상연락 1순위 - 관계" 가 "비상연락 1순위" 보다 먼저)
+const COMPILED = LABELS.map(l => ({
+  k: l.k, wrapped: !!l.wrapped,
+  src: l.re || patToRe(l.p),
+  len: (l.p || l.re).length
+})).sort((a,b) => b.len - a.len)
+  .map(l => Object.assign(l, {
+    start: new RegExp('^\\s*(?:' + l.src + ')(?=\\s|$|:)\\s*:?\\s*'),
+    exact: new RegExp('^\\s*(?:' + l.src + ')\\s*$')
+  }));
+
+const ALL_LABEL_SRC = COMPILED.map(l => l.src).join('|');
+// "…요청- 식권 소진 시…" 처럼 항목 두 개가 붙어 나온 글머리 줄을 분리
+// (구분용 '-' 는 지우지 않고 그 앞에서만 자른다)
+const GLUED_BULLET = new RegExp('(?<=\\S)(?=-\\s*(?:' + ALL_LABEL_SRC + ')\\s*:)');
+
+const NOISE = [
+  /^\s*MOMENT\s*WORKS\b/i,
+  /^\s*M\s*O\s*M\s*E\s*N\s*T\s+W\s*O\s*R\s*K\s*S\s*$/,
+  /작성해\s*주셔서\s*감사합니다/,
+  /위\s*내용은\s*사실과\s*다름없으며/,
+  /본\s*문서는\s*모먼트웍스/,
+  /축의대\s*대행\s*운영\s*설정서/,
+  /두\s*분의\s*결혼식을\s*위하여/,
+];
+const FOOTER_RE = /MOMENT\s*WORKS\s*\d\s*\/\s*\d/g;   // 쪽번호는 항상 한 자리 (예: "1 / 4")
+
+function matchSection(t){
+  // "01   예식 기본정보" 또는 "■ 01. 예식 기본정보"
+  let m = t.match(/^\s*(?:■\s*)?(\d{2})\s*\.?\s+(.+?)\s*$/);
+  if(m && SECTION_TITLES[m[1]] && m[2].replace(/\s+/g,'') === SECTION_TITLES[m[1]].replace(/\s+/g,'')) return m[1];
+  if(/^\s*■\s*동의\s*여부/.test(t)) return 'end';
+  return null;
 }
 
-function stripFooter(s){
-  // guard against a footer page-number gluing directly onto the next section
-  // number with no space, e.g. "...MOMENT WORKS 1 / 405 식권 운영" (05 section)
-  s = s.replace(/(MOMENT WORKS\s*\d\s*\/\s*\d)(0[1-9]|1[0-4])(\s)/g, '$1 $2$3');
-  return s.replace(/MOMENT WORKS\s*\d+\s*\/\s*\d+/g, ' ');
-}
-
-function getSectionText(flat, name){
-  const idx = flat.indexOf(name);
-  if(idx === -1) return '';
-  const start = idx + name.length;
-  let end = flat.length;
-  for(const other of SECTION_ANCHORS){
-    if(other === name) continue;
-    const oIdx = flat.indexOf(other, start);
-    if(oIdx !== -1 && oIdx < end) end = oIdx;
+function matchLabel(t){
+  for(const l of COMPILED){
+    const m = t.match(l.start);
+    if(m) return { k:l.k, wrapped:l.wrapped, rest:t.slice(m[0].length).trim() };
   }
-  return flat.slice(start, end);
+  return null;
 }
 
-// order-independent anchor extraction within a scoped block of text
-function extractLabels(block, labels){
-  const positions = labels.map(l => ({...l, idx: block.indexOf(l.label)}));
-  const out = {};
-  for(let i=0;i<positions.length;i++){
-    const p = positions[i];
-    if(p.idx === -1){ out[p.key] = ''; continue; }
-    const valStart = p.idx + p.label.length;
-    let valEnd = block.length;
-    for(let j=0;j<positions.length;j++){
-      if(j===i) continue;
-      const q = positions[j];
-      if(q.idx !== -1 && q.idx > p.idx && q.idx < valEnd) valEnd = q.idx;
+/* ───────────── 복원 데이터형 ───────────── */
+const JSON_MAP = {
+  groom_name:'groom', bride_name:'bride', contract_package:'package', contract_half_side:'halfside',
+  wedding_date:'date', wedding_time:'time', venue_region:'region', venue_name:'venue', hall_name:'hall',
+  groom_guest_count:'guest_g', bride_guest_count:'guest_b',
+  groom_side_name:'parents_g', bride_side_name:'parents_b',
+  relation_type:'relation', relation_type_etc:'relation_etc',
+  money_op:'money_way', transfer_yn:'transfer_yn', groom_account:'acc_g', bride_account:'acc_b',
+  refund_way:'refund', refund_way_etc:'refund_etc',
+  ticket_adult_groom:'tk_g_a', ticket_child_groom:'tk_g_c', ticket_adult_bride:'tk_b_a', ticket_child_bride:'tk_b_c',
+  transfer_check_way:'tk_contact', mobile_invitation_url:'tk_invite', ticket_cross_use:'tk_cross',
+  ticket_out_way:'tk_out', ticket_out_place:'tk_place', child_ticket_age:'tk_age',
+  child_to_adult_ticket:'tk_child_swap', ticket_reissue_way:'tk_extra', ticket_reissue_way_etc:'tk_extra_etc',
+  gift_yn:'gift', gift_type:'gift_type', gift_place:'gift_place', gift_target:'gift_target',
+  gift_criteria:'gift_criteria', gift_script:'gift_script',
+  info_parking_way:'parking', info_parking_time:'parking_free', info_atm:'atm', info_hall:'hallpos',
+  info_bride_room:'waiting', info_meal_time:'meal',
+  vip_yn:'vip_flag',
+  handover_relation_groom:'hand_g_rel', handover_name_groom:'hand_g_name', handover_phone_groom:'hand_g_phone',
+  handover_relation_bride:'hand_b_rel', handover_name_bride:'hand_b_name', handover_phone_bride:'hand_b_phone',
+  handover_report_email_groom:'email_g', handover_report_email_bride:'email_b',
+  final_report_visibility:'hand_disclose', detail_delivery_way:'hand_method',
+  sch_mw_arrive:'arrival',
+  emg_1_relation:'e1_rel', emg_1_name:'e1_name', emg_1_phone:'e1_phone',
+  emg_2_relation:'e2_rel', emg_2_name:'e2_name', emg_2_phone:'e2_phone',
+  photo_consent:'photo_agree', extra_camera:'photo_cam',
+  camera_deliverer_relation:'cam_rel', camera_deliverer_name:'cam_name', camera_deliverer_phone:'cam_phone',
+  link_receiver_groom:'link_g', link_receiver_bride:'link_b',
+  guide_doc:'signage', contractor_name:'contractor'
+};
+
+function extractRestoreData(raw){
+  const a = raw.indexOf('--MW-DATA-START--'), b = raw.indexOf('--MW-DATA-END--');
+  if(a === -1 || b === -1 || b <= a) return null;
+  try{
+    const bin = atob(raw.slice(a + 17, b).replace(/\s+/g, ''));
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder('utf-8').decode(bytes));
+  }catch(err){ console.error('복원 데이터 해석 실패', err); return null; }
+}
+
+function parseRestore(d){
+  const entries = {};
+  for(const [jk, k] of Object.entries(JSON_MAP)){
+    if(Object.prototype.hasOwnProperty.call(d, jk)) entries[k] = String(d[jk] ?? '').trim();
+  }
+  let vip = null;
+  if(Array.isArray(d.vip_name)){
+    const rel = d.vip_relation || [], con = d.vip_contact || [], memo = d.vip_memo || [];
+    vip = d.vip_name.map((n,i) => [n, rel[i], con[i], memo[i]].map(v => String(v ?? '').trim()))
+                    .filter(r => r.some(Boolean));
+  }
+  return { format:'복원 데이터', entries, vip, unknown:[] };
+}
+
+/* ───────────── 텍스트형 (표형·글머리형 공통) ───────────── */
+const VIP_BULLET = /^-?\s*(.+?)\s*\/\s*관계\s*:\s*(.*?)\s*\/\s*연락처\s*:\s*(.*?)\s*\/\s*지급\s*식권\s*수량\s*:\s*(.*)$/;
+
+function parseText(raw){
+  const bullet = /■\s*01\s*\./.test(raw);
+  const lines = raw.split(/\r?\n/)
+    .map(l => l.replace(FOOTER_RE, ' ').replace(/ /g, ' ').replace(/\s+$/, ''))
+    .filter(l => l.trim());
+
+  const entries = {}, unknown = [], vipRows = [];
+  let section = null, cur = null;
+
+  const begin = (key, rest, extra) => {
+    cur = { key, parts: rest ? [rest] : [], unknownLabel: extra && extra.unknownLabel, skipYeobu: extra && extra.wrapped };
+    list.push(cur);
+  };
+  const list = [];
+
+  for(const line of lines){
+    const t = line.trim();
+    const sec = matchSection(t);
+    if(sec){ section = sec; cur = null; continue; }
+    if(section === null || section === 'end') continue;   // 01 이전(표지)·동의 이후는 무시
+    if(NOISE.some(re => re.test(t))) continue;
+
+    if(section === '08'){
+      const lm = matchLabel(t);
+      if(lm && lm.k === 'vip_flag'){ entries.vip_flag = lm.rest; continue; }
+      if(/성함\s*\(?업체명\)?/.test(t) && /지급/.test(t)) continue;           // 표 머리글
+      const bm = t.match(VIP_BULLET);
+      if(bm){ vipRows.push([bm[1], bm[2], bm[3], bm[4]].map(s => s.trim())); continue; }
+      const cells = line.trim().split(/\s{2,}/);
+      if(cells.length >= 3) vipRows.push([cells[0], cells[1], cells[2], cells.slice(3).join(' ')].map(s => (s||'').trim()));
+      continue;
     }
-    out[p.key] = norm(block.slice(valStart, valEnd));
+
+    // ── 글머리형: "- 라벨: 값" (붙어 나온 항목은 먼저 분리)
+    if(bullet){
+      for(const seg of t.split(GLUED_BULLET)){
+        const bm = seg.match(/^-?\s*([^:]{1,60}?)\s*:\s*(.*)$/);
+        if(/^\s*-/.test(seg) && bm){
+          const lab = matchLabelExact(bm[1]);
+          if(lab) begin(lab.k, bm[2].trim());
+          else { begin(null, bm[2].trim(), {unknownLabel: bm[1].trim()}); }
+        }else if(cur){
+          cur.parts.push(seg.trim());
+        }
+      }
+      continue;
+    }
+
+    // ── 표형: "라벨   값" (값이 다음 줄로 이어질 수 있음)
+    const lm = matchLabel(t);
+    if(lm){ begin(lm.k, lm.rest, {wrapped: lm.wrapped}); continue; }
+    if(cur && cur.skipYeobu && /^여부$/.test(t)){ cur.skipYeobu = false; continue; }   // 꺾인 라벨의 꼬리
+    if(/\S\s{2,}\S/.test(line.trim())){                         // 사전에 없는 새 항목 → 앞 항목에 섞지 않는다
+      const cells = line.trim().split(/\s{2,}/);
+      begin(null, cells.slice(1).join(' '), {unknownLabel: cells[0]});
+      continue;
+    }
+    if(cur) cur.parts.push(t);                                   // 이어지는 값
+  }
+
+  for(const c of list){
+    const v = c.parts.join(' ').replace(/\s+/g, ' ').trim();
+    if(c.key){ if(!(c.key in entries)) entries[c.key] = v; }
+    else unknown.push({label:c.unknownLabel, value:v});
+  }
+  return { format: bullet ? '글머리형 텍스트' : '표형 텍스트', entries, vip: vipRows, unknown };
+}
+
+function matchLabelExact(s){
+  for(const l of COMPILED) if(l.exact.test(s)) return { k:l.k };
+  return null;
+}
+
+function parseSettings(raw){
+  const restore = extractRestoreData(raw);
+  if(restore) return parseRestore(restore);
+  return parseText(raw);
+}
+
+/* ───────────── 카드 항목 구성 ───────────── */
+const has = v => v !== undefined && v !== null && String(v).trim() !== '';
+const joinNE = (arr, sep) => arr.filter(has).join(sep);
+const NA = '해당없음';
+const person = (...p) => {
+  const v = p.filter(has);
+  if(v.length && v.every(x => x === NA)) return NA;
+  return v.join(' / ');
+};
+// "기타"를 고르고 직접 쓴 내용이 있으면 그 내용만 보여 준다
+const withEtc = (v, etc) => (v === '기타' && has(etc)) ? etc : joinNE([v, etc], ' — ');
+
+const COMPOSE = {
+  relation: e => withEtc(e.relation, e.relation_etc),
+  refund:   e => withEtc(e.refund, e.refund_etc),
+  tk_extra: e => withEtc(e.tk_extra, e.tk_extra_etc),
+  gift:     e => (has(e.gift) && !/^없음/.test(e.gift))
+                   ? joinNE([e.gift, e.gift_type, e.gift_place, e.gift_target, e.gift_criteria, e.gift_script], ' / ')
+                   : (e.gift ?? ''),
+  hand_g:   e => person(e.hand_g_rel, e.hand_g_name, e.hand_g_phone),
+  hand_b:   e => person(e.hand_b_rel, e.hand_b_name, e.hand_b_phone),
+  emg1:     e => person(e.e1_rel, e.e1_name, e.e1_phone) || (e.e1_all ?? ''),
+  emg2:     e => person(e.e2_rel, e.e2_name, e.e2_phone) || (e.e2_all ?? ''),
+  cam_person: e => person(e.cam_rel, e.cam_name, e.cam_phone),
+};
+// 값이 "설정서에 그 항목이 있었는지" 판단할 때 보는 원본 키
+const SOURCE_KEYS = {
+  relation:['relation'], refund:['refund'], tk_extra:['tk_extra','tk_extra_etc'], gift:['gift'],
+  hand_g:['hand_g_rel','hand_g_name','hand_g_phone'], hand_b:['hand_b_rel','hand_b_name','hand_b_phone'],
+  emg1:['e1_rel','e1_name','e1_phone','e1_all'], emg2:['e2_rel','e2_name','e2_phone','e2_all'],
+  cam_person:['cam_rel','cam_name','cam_phone'],
+};
+
+/* ───────────── 화면 반영 ───────────── */
+const $ = id => document.getElementById(id);
+const fields = () => Array.from(document.querySelectorAll('[data-k]'));
+
+function fillVip(rows, flag){
+  const body = $('vipBody');
+  body.innerHTML = '';
+  let data = rows && rows.length ? rows : null;
+  if(!data){
+    data = (has(flag) && /^없음|^아니/.test(flag)) ? [[flag,'','','']] : [['','','',''],['','','','']];
+  }
+  data.forEach(r => addVipRow(r));
+}
+function addVipRow(r){
+  const tr = document.createElement('tr');
+  for(let i = 0; i < 4; i++){
+    const td = document.createElement('td');
+    td.contentEditable = 'true';
+    td.textContent = (r && r[i]) || '';
+    tr.appendChild(td);
+  }
+  $('vipBody').appendChild(tr);
+}
+
+function resetCard(){
+  fields().forEach(el => { el.textContent = ''; el.classList.remove('missing'); });
+  fillVip([], '');
+}
+
+function applyParsed(p){
+  resetCard();
+  const e = p.entries;
+  let filled = 0, missing = 0;
+  for(const el of fields()){
+    const k = el.dataset.k;
+    const val = COMPOSE[k] ? COMPOSE[k](e) : (e[k] ?? '');
+    el.textContent = String(val).trim();
+    const srcKeys = SOURCE_KEYS[k] || [k];
+    const present = srcKeys.some(s => Object.prototype.hasOwnProperty.call(e, s));
+    if(has(el.textContent)) filled++;
+    if(!present){ el.classList.add('missing'); missing++; }
+  }
+  fillVip(p.vip, e.vip_flag);
+  scheduleFit();
+  return { filled, missing };
+}
+
+/* ───────────── A4 한 장에 맞추기 ─────────────
+ * 값이 길어져 넘치면 글자 크기를 단계적으로 줄여 한 장을 유지한다. */
+let fitTimer = null;
+function scheduleFit(){ clearTimeout(fitTimer); fitTimer = setTimeout(fitToA4, 40); }
+function fitToA4(){
+  const sheet = $('sheet'), inner = $('content');
+  if(!sheet || !inner) return;
+  const cs = getComputedStyle(sheet);
+  const avail = sheet.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+  let fs = 10.6;
+  sheet.style.setProperty('--fs', fs + 'px');
+  while(inner.scrollHeight > avail && fs > 7.6){
+    fs = Math.round((fs - 0.2) * 10) / 10;
+    sheet.style.setProperty('--fs', fs + 'px');
+  }
+  const badge = $('fitBadge');
+  if(badge) badge.textContent = fs < 10.6 ? `A4 한 장에 맞추려고 글자를 ${Math.round(fs / 10.6 * 100)}%로 줄였어요` : '';
+}
+
+/* ───────────── 파일 처리 ───────────── */
+// 한 줄의 글자 조각들을 실제 간격에 맞춰 이어 붙인다.
+//  - 거의 붙어 있으면 그대로 붙임   ("2" + "층" → "2층")
+//  - 단어 간격이면 한 칸            ("신랑" + "성함" → "신랑 성함")
+//  - 열 간격(라벨↔값)이면 세 칸     (파서가 열을 나눌 때 사용)
+function joinLine(its){
+  its.sort((a, b) => a.x - b.x);
+  let out = '', prev = null;
+  for(const it of its){
+    if(!it.s) continue;
+    if(!it.s.trim()){                       // 공백 조각: 폭이 넓으면 '열 구분'으로 본다
+      if(prev && it.w > Math.max(prev.h, it.h, 1) * 1.3) out = out.replace(/\s+$/, '') + '   ';
+      continue;                             // prev는 갱신하지 않는다(다음 글자와의 실제 간격으로 판단)
+    }
+    if(prev){
+      const gap = it.x - (prev.x + prev.w);
+      const fs = Math.max(prev.h, it.h, 1);
+      if(gap > fs * 1.3) out = out.replace(/\s+$/, '') + '   ';
+      else if(gap > fs * 0.12 && !/\s$/.test(out) && !/^\s/.test(it.s)) out += ' ';
+    }
+    out += it.s;
+    prev = it;
   }
   return out;
 }
 
-async function extractPdfText(file){
+async function pdfToText(file){
+  if(typeof pdfjsLib === 'undefined') throw new Error('PDF 라이브러리를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.');
   const buf = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({data: buf}).promise;
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
   let full = '';
-  for(let i=1;i<=pdf.numPages;i++){
+  for(let i = 1; i <= pdf.numPages; i++){
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    // group by rounded y to rebuild line order roughly, then join with newlines
-    const items = content.items.map(it => ({str: it.str, y: Math.round(it.transform[5]), x: it.transform[4]}));
-    items.sort((a,b) => b.y - a.y || a.x - b.x);
+    const items = content.items.filter(it => typeof it.str === 'string').map(it => ({
+      s: it.str, x: it.transform[4], y: Math.round(it.transform[5]),
+      w: it.width || 0, h: Math.abs(it.transform[3]) || it.height || 10
+    }));
+    items.sort((a, b) => b.y - a.y || a.x - b.x);
     let lastY = null, line = [];
     const lines = [];
     for(const it of items){
-      if(lastY === null || Math.abs(it.y - lastY) < 3){
-        line.push(it.str);
-      } else {
-        lines.push(line.join(' '));
-        line = [it.str];
-      }
+      if(lastY === null || Math.abs(it.y - lastY) < 3) line.push(it);
+      else { lines.push(joinLine(line)); line = [it]; }
       lastY = it.y;
     }
-    if(line.length) lines.push(line.join(' '));
+    if(line.length) lines.push(joinLine(line));
     full += lines.join('\n') + '\n';
   }
   return full;
 }
 
-function parseVip(block){
-  // block runs from "08 VIP 명단" to "09 축의금 인계"
-  const noneLabel = "VIP 명단 작성 여부";
-  const noneIdx = block.indexOf(noneLabel);
-  if(noneIdx !== -1){
-    const after = norm(block.slice(noneIdx + noneLabel.length));
-    // "없음" (or similar negative) with nothing else meaningful after -> no VIPs
-    if(!after || /^(없음|아니오|없다|미작성)/.test(after)){
-      return [];
-    }
-  }
-  // strip header row
-  const headerLabel = "성함(업체명) 관계 연락처 지급 식권 수량";
-  let rest = block;
-  const hIdx = rest.indexOf(headerLabel);
-  if(hIdx !== -1) rest = rest.slice(hIdx + headerLabel.length);
-  rest = norm(rest);
-  if(!rest) return [];
-  // heuristic split: name, relation, contact(- or phone), remaining text = amount note
-  // pattern: <name> <relation> <contact> <amount note...>
-  const m = rest.match(/^(\S+)\s+(\S+)\s+(\S+)\s+(.+)$/);
-  if(m){
-    return [[m[1], m[2], m[3], m[4]]];
-  }
-  return [[rest, '', '', '']];
+let loadToken = 0;
+function setState(kind, main, sub){
+  const dz = $('dropzone');
+  dz.dataset.state = kind;                       // idle | busy | ok | err
+  $('dzMain').textContent = main;
+  $('dzSub').textContent = sub || '';
 }
 
-function fillVipTable(rows){
-  const body = $('vipBody');
-  body.innerHTML = '';
-  const finalRows = rows.length ? rows : [['','','',''],['','','','']];
-  for(const r of finalRows){
-    const tr = document.createElement('tr');
-    for(let i=0;i<4;i++){
-      const td = document.createElement('td');
-      td.contentEditable = 'true';
-      td.textContent = r[i] || '';
-      tr.appendChild(td);
-    }
-    body.appendChild(tr);
-  }
-}
-
-$('addVipBtn').addEventListener('click', () => {
-  const tr = document.createElement('tr');
-  for(let i=0;i<4;i++){
-    const td = document.createElement('td');
-    td.contentEditable = 'true';
-    tr.appendChild(td);
-  }
-  $('vipBody').appendChild(tr);
-});
-
-$('clearBtn').addEventListener('click', () => {
-  document.querySelectorAll('[contenteditable]').forEach(el => {
-    if(el.closest('#vipTable')) el.textContent = '';
-    else el.textContent = '-';
-  });
-  fillVipTable([]);
-  setStatus('');
-});
-
-$('printBtn').addEventListener('click', () => window.print());
-
-$('pdfInput').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
+async function handleFile(file){
+  const token = ++loadToken;
   if(!file) return;
-  setStatus('PDF 읽는 중…');
-  try{
-    const raw = await extractPdfText(file);
-    const flat = norm(stripFooter(norm(raw)));
-
-    const s01 = getSectionText(flat, "01 예식 기본정보");
-    const s02 = getSectionText(flat, "02 양가 정보");
-    const s03 = getSectionText(flat, "03 관계 설정");
-    const s04 = getSectionText(flat, "04 축의금 정리방식");
-    const s05 = getSectionText(flat, "05 식권 운영");
-    const s06 = getSectionText(flat, "06 답례품");
-    const s07 = getSectionText(flat, "07 하객 안내사항");
-    const s08 = getSectionText(flat, "08 VIP 명단");
-    const s09 = getSectionText(flat, "09 축의금 인계");
-    const s10 = getSectionText(flat, "10 당일 일정");
-    const s11 = getSectionText(flat, "11 긴급상황 대응");
-    const s12 = getSectionText(flat, "12 사진 및 영상촬영");
-    const s13 = getSectionText(flat, "13 예식 안내문 제작 여부");
-
-    const f01 = extractLabels(s01, [
-      {key:'groom', label:'신랑 성함'}, {key:'bride', label:'신부 성함'},
-      {key:'package', label:'계약 패키지'},
-      {key:'side', label:'한측 계약 - 계약 측'},
-      {key:'date', label:'예식일'}, {key:'time', label:'예식 시작시간'},
-      {key:'region', label:'지역'},
-      {key:'venue', label:'예식장명'}, {key:'hall', label:'홀 이름'},
-      {key:'guest_g', label:'신랑측 예상 하객 수'}, {key:'guest_b', label:'신부측 예상 하객 수'},
-    ]);
-    const f02 = extractLabels(s02, [
-      {key:'parents_g', label:'[신랑측] 혼주 성함'}, {key:'parents_b', label:'[신부측] 혼주 성함'},
-    ]);
-    const f03 = extractLabels(s03, [ {key:'relation', label:'관계 설정'} ]);
-    const f04 = extractLabels(s04, [
-      {key:'way', label:'축의금 정리 방식'}, {key:'transfer', label:'계좌이체 받을 예정'},
-      {key:'acc_g', label:'신랑 계좌'}, {key:'acc_b', label:'신부 계좌'},
-      {key:'refund', label:'축의금 반환 요청 시 대응 방법'},
-    ]);
-    const f05 = extractLabels(s05, [
-      {key:'tk_g_a', label:'배정 식권수량(신랑측 대인)'}, {key:'tk_g_c', label:'배정 식권수량(신랑측 소인)'},
-      {key:'tk_b_a', label:'배정 식권수량(신부측 대인)'}, {key:'tk_b_c', label:'배정 식권수량(신부측 소인)'},
-      {key:'contact_method', label:'축의금 계좌이체 하객 응대 방법'},
-      {key:'invite_url', label:'모바일 청첩장 주소'},
-      {key:'cross', label:'식권 교차 사용 가능 여부'},
-      {key:'out', label:'식권 소진 시 대응 방법'}, {key:'place', label:'식권 소진 시 추가 수령 장소'},
-      {key:'age', label:'소인 식권의 나이 기준'},
-      {key:'swap_boundary', label:'소인 식권 소진'},
-      {key:'extra', label:'식권 추가 지급 요청 시 대응 방법'},
-      {key:'extra_detail_boundary', label:'식권 추가 지급 대응'},
-    ]);
-    const f06 = extractLabels(s06, [ {key:'gift', label:'답례품 제공 여부'} ]);
-    const f07 = extractLabels(s07, [
-      {key:'parking', label:'주차 등록 방법'}, {key:'parking_free', label:'무료 주차 시간'},
-      {key:'atm', label:'ATM 위치'}, {key:'hallpos', label:'연회장 위치'},
-      {key:'waiting', label:'신부대기실 위치'}, {key:'meal', label:'식사 가능 시간'},
-    ]);
-    const vipRows = parseVip(s08);
-    const f09 = extractLabels(s09, [
-      {key:'hand_g_rel', label:'인계 받으실 분(신랑측) - 관계'}, {key:'hand_g_name', label:'인계 받으실 분(신랑측) - 성함'},
-      {key:'hand_b_rel', label:'인계 받으실 분(신부측) - 관계'}, {key:'hand_b_name', label:'인계 받으실 분(신부측) - 성함'},
-      {key:'hand_b_phone', label:'인계 받으실 분(신부측) - 연락처'},
-      {key:'disclose', label:'축의금 인계시, 축의금 내역 노출 여부'},
-      {key:'method', label:'축의금 전체 세부내역 전달 방식'},
-      {key:'email_g', label:'축의금 정리내역 전달 이메일(신랑측)'},
-      {key:'email_b', label:'축의금 정리내역 전달 이메일(신부측)'},
-    ]);
-    const f10 = extractLabels(s10, [ {key:'arrival', label:'신랑,신부님 웨딩홀 도착 예상 시간'} ]);
-    const f11 = extractLabels(s11, [
-      {key:'e1_rel', label:'비상연락 1순위 - 관계'}, {key:'e1_name', label:'비상연락 1순위 - 성함'}, {key:'e1_phone', label:'비상연락 1순위 - 연락처'},
-      {key:'e2_rel', label:'비상연락 2순위 - 관계'}, {key:'e2_name', label:'비상연락 2순위 - 성함'}, {key:'e2_phone', label:'비상연락 2순위 - 연락처'},
-    ]);
-    const f12 = extractLabels(s12, [
-      {key:'agree', label:'서비스 전 과정 촬영 동의'}, {key:'cam', label:'추가 촬영용 카메라 제공 여부'},
-      {key:'cam_rel', label:'추가 카메라 전달자 - 관계'}, {key:'cam_name', label:'추가 카메라 전달자 - 성함'}, {key:'cam_phone', label:'추가 카메라 전달자 - 연락처'},
-      {key:'link_g', label:'링크 받으실 분(신랑측)'}, {key:'link_b', label:'링크 받으실 분(신부측)'},
-    ]);
-    const f13 = extractLabels(s13, [ {key:'signage', label:'예식 안내문 제작 여부'} ]);
-
-    // top strip
-    setText('f_groom_top', f01.groom);
-    setText('f_bride_top', f01.bride);
-    setText('f_package_top', f01.package);
-    setText('f_contractside_top', f01.side);
-    setText('f_date_top', f01.date);
-    setText('f_time_top', f01.time);
-    setText('f_region_top', f01.region);
-    setText('f_venue_top', f01.venue);
-    setText('f_hall_top', f01.hall);
-
-    setText('f_guest_g', f01.guest_g);
-    setText('f_guest_b', f01.guest_b);
-    setText('f_relation', f03.relation);
-    setText('f_arrival', f10.arrival);
-
-    setText('f_groom', f01.groom);
-    setText('f_bride', f01.bride);
-    setText('f_venue', [f01.venue, f01.hall].filter(Boolean).join(' / '));
-    setText('f_parents_g', f02.parents_g);
-    setText('f_parents_b', f02.parents_b);
-
-    setText('f_money_way', f04.way);
-    setText('f_transfer_yn', f04.transfer);
-    setText('f_acc_g', f04.acc_g);
-    setText('f_acc_b', f04.acc_b);
-    setText('f_refund', f04.refund);
-
-    setText('f_tk_g_a', f05.tk_g_a);
-    setText('f_tk_g_c', f05.tk_g_c);
-    setText('f_tk_b_a', f05.tk_b_a);
-    setText('f_tk_b_c', f05.tk_b_c);
-    setText('f_tk_cross', f05.cross);
-    setText('f_tk_contact', f05.contact_method);
-    setText('f_tk_invite', f05.invite_url);
-    setText('f_tk_out', f05.out);
-    setText('f_tk_place', f05.place);
-    setText('f_tk_age', f05.age);
-    setText('f_tk_extra', f05.extra);
-
-    setText('f_parking', [f07.parking, f07.parking_free].filter(Boolean).join(' · '));
-    setText('f_atm', f07.atm);
-    setText('f_hallpos', f07.hallpos);
-    setText('f_waiting', f07.waiting);
-    setText('f_meal', f07.meal);
-
-    fillVipTable(vipRows);
-
-    const handG = (f09.hand_g_rel === '해당없음' && f09.hand_g_name === '해당없음')
-      ? '해당없음' : [f09.hand_g_rel, f09.hand_g_name].filter(Boolean).join(' / ');
-    const handB = [f09.hand_b_rel, f09.hand_b_name, f09.hand_b_phone].filter(Boolean).join(' / ');
-    setText('f_hand_g', handG);
-    setText('f_hand_b', handB);
-    setText('f_hand_disclose', f09.disclose);
-
-    setText('f_emg1', [f11.e1_rel, f11.e1_name, f11.e1_phone].filter(Boolean).join(' / '));
-    setText('f_emg2', [f11.e2_rel, f11.e2_name, f11.e2_phone].filter(Boolean).join(' / '));
-
-    setText('f_photo_agree', f12.agree);
-    setText('f_photo_cam', f12.cam);
-    setText('f_photo_cam_person', [f12.cam_rel, f12.cam_name, f12.cam_phone].filter(Boolean).join(' / '));
-    setText('f_gift', f06.gift);
-
-    setText('f_link_g', f12.link_g);
-    setText('f_link_b', f12.link_b);
-    setText('f_signage', f13.signage);
-
-    setStatus('자동 입력 완료 · 회색 값은 직접 클릭해서 수정할 수 있습니다');
-  }catch(err){
-    console.error(err);
-    setStatus('PDF 인식에 실패했습니다. 직접 입력해 주세요.');
+  if(!(file.type === 'application/pdf' || /\.pdf$/i.test(file.name))){
+    setState('err', 'PDF 파일만 불러올 수 있어요', `선택한 파일: ${file.name}`);
+    return;
   }
-});
+  setState('busy', '설정서를 읽는 중…', file.name);
+  try{
+    const raw = await pdfToText(file);
+    if(token !== loadToken) return;
+    const parsed = parseSettings(raw);
+    const found = Object.keys(parsed.entries).length;
+    if(found < 6){
+      setState('err', '이 PDF에서는 항목을 읽을 수 없어요',
+        '글자 정보가 없는 이미지 형식이라 자동 입력이 불가능해요. 아래 카드에 직접 입력하거나, 복원 데이터가 포함된 설정서를 올려 주세요.');
+      return;
+    }
+    const r = applyParsed(parsed);
+    const notes = [`${parsed.format}로 읽었어요`, `${r.filled}개 항목 입력`];
+    if(r.missing) notes.push(`설정서에 없는 항목 ${r.missing}개(노란 점선)`);
+    if(parsed.unknown.length) notes.push(`인식하지 못한 항목 ${parsed.unknown.length}개: ${parsed.unknown.map(u => u.label).join(', ')}`);
+    setState('ok', `불러오기 완료 · ${file.name}`, notes.join(' · ') + ' — 모든 칸은 클릭해서 바로 수정할 수 있어요.');
+    window.__lastParsed = parsed;
+  }catch(err){
+    if(token !== loadToken) return;
+    console.error(err);
+    setState('err', 'PDF를 열 수 없어요', err && err.message ? err.message : String(err));
+  }
+}
+
+/* ───────────── 이벤트 ───────────── */
+function init(){
+  const dz = $('dropzone'), input = $('pdfInput');
+  setState('idle', '설정서 PDF를 여기로 끌어다 놓으세요', '또는 이 영역을 클릭해서 파일 선택');
+
+  dz.addEventListener('click', () => input.click());
+  dz.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); input.click(); } });
+  input.addEventListener('change', () => { const f = input.files[0]; input.value = ''; handleFile(f); });
+
+  // 화면 어디에 놓아도 받는다 (PDF를 놓았을 때 브라우저가 파일을 열어 버리는 것도 방지)
+  let depth = 0;
+  const isFiles = e => e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+  window.addEventListener('dragenter', e => { if(!isFiles(e)) return; e.preventDefault(); depth++; document.body.classList.add('dragging'); });
+  window.addEventListener('dragover',  e => { if(!isFiles(e)) return; e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+  window.addEventListener('dragleave', e => { if(!isFiles(e)) return; depth = Math.max(0, depth - 1); if(!depth) document.body.classList.remove('dragging'); });
+  window.addEventListener('drop', e => {
+    if(!isFiles(e)) return;
+    e.preventDefault(); depth = 0; document.body.classList.remove('dragging');
+    const files = Array.from(e.dataTransfer.files || []);
+    if(files.length > 1) setState('busy', `파일이 ${files.length}개예요 — 첫 번째 파일만 불러와요`, files[0].name);
+    handleFile(files[0]);
+  });
+
+  // 직접 수정: 같은 항목(상단 바 ↔ 카드 본문)은 함께 바뀐다
+  document.addEventListener('input', e => {
+    const el = e.target.closest && e.target.closest('[data-k]');
+    if(!el) { scheduleFit(); return; }
+    el.classList.remove('missing');
+    document.querySelectorAll(`[data-k="${el.dataset.k}"]`).forEach(t => { if(t !== el){ t.textContent = el.textContent; t.classList.remove('missing'); } });
+    scheduleFit();
+  });
+  // 줄바꿈 없이 한 줄로, 붙여넣기는 글자만
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && e.target.isContentEditable){ e.preventDefault(); }
+  });
+  document.addEventListener('paste', e => {
+    if(!e.target.isContentEditable) return;
+    e.preventDefault();
+    const text = ((e.clipboardData || window.clipboardData).getData('text/plain') || '').replace(/\s*\n\s*/g, ' ');
+    if(!document.execCommand('insertText', false, text)){
+      const sel = getSelection(); if(sel.rangeCount){ sel.deleteFromDocument(); sel.getRangeAt(0).insertNode(document.createTextNode(text)); }
+    }
+  });
+
+  $('addVipBtn').addEventListener('click', () => { addVipRow(); scheduleFit(); });
+  $('delVipBtn').addEventListener('click', () => { const b = $('vipBody'); if(b.rows.length > 1) b.deleteRow(b.rows.length - 1); scheduleFit(); });
+  $('clearBtn').addEventListener('click', () => {
+    if(!confirm('입력된 내용을 모두 지울까요?')) return;
+    resetCard(); loadToken++;
+    setState('idle', '설정서 PDF를 여기로 끌어다 놓으세요', '또는 이 영역을 클릭해서 파일 선택');
+    scheduleFit();
+  });
+  $('printBtn').addEventListener('click', () => { fitToA4(); window.print(); });
+  window.addEventListener('beforeprint', fitToA4);
+
+  if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  fillVip([], '');
+  fitToA4();
+}
+
+window.MW = { parseSettings, parseText, parseRestore, applyParsed, handleFile, fitToA4, COMPOSE };
+if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
 </script>
 </body>
 </html>
